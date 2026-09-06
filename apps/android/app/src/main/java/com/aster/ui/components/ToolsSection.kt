@@ -119,13 +119,13 @@ fun ToolsSection(
 
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = category,
+                                text = categoryLabel(category),
                                 style = MaterialTheme.typography.titleSmall,
                                 color = colors.text,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "${categoryTools.size} tools",
+                                text = "${categoryTools.size} инструментов",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = colors.textMuted
                             )
@@ -158,6 +158,22 @@ fun ToolsSection(
             }
         }
     }
+}
+
+private fun categoryLabel(category: String): String = when (category) {
+    "Screen Control" -> "Управление экраном"
+    "Device" -> "Устройство"
+    "Files" -> "Файлы"
+    "Camera" -> "Камера"
+    "Communication" -> "Связь"
+    "Notifications" -> "Уведомления"
+    "Media" -> "Мультимедиа"
+    "Storage" -> "Хранилище"
+    "Apps" -> "Приложения"
+    "System" -> "Система"
+    "Overlays" -> "Наложения"
+    "Alarms" -> "Будильники"
+    else -> "Другое"
 }
 
 // =============================================================================
