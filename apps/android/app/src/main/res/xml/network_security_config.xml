@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <!--
-        Allow cleartext (HTTP/WS) for all connections.
-        Aster is a device controller that needs to connect to local network
-        servers via WebSocket (ws://) and serve HTTP on LAN. Android's domain-config
-        cannot match IP address ranges (192.168.x.x, 10.x.x.x, 100.x.x.x).
-        The app itself warns about insecure connections and prefers wss:// / https://.
-    -->
+    <!-- Cleartext is retained only because the app explicitly supports user-entered
+         LAN/Tailscale ws:// endpoints. No remote endpoint is bundled or trusted here. -->
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system" />

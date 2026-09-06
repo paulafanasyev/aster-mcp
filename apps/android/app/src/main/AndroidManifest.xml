@@ -21,7 +21,6 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!-- Caller ID for incoming_call events on API 28-30 (number is never delivered on 31+). -->
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
@@ -30,21 +29,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- Storage -->
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
 
     <!-- Packages -->
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" />
-    <!-- App usage stats (last_used). Special-access op: declaring it is
-         required, but the user must grant "Usage access" in Settings.
-         InstalledAppsHandler returns last_used:null when not granted. -->
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
 
     <!-- Contacts -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -53,7 +44,6 @@
     <!-- Camera -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
-
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
 
@@ -65,14 +55,6 @@
 
     <!-- System -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <!-- OpenAlly. Aster launches it from the companion-face approval card. Package
-         visibility is already implied by QUERY_ALL_PACKAGES above, but declare the
-         dependency narrowly and explicitly so it survives that permission being
-         dropped. -->
-    <queries>
-        <package android:name="openally.ai" />
-    </queries>
 
     <application
         android:name=".AsterApplication"
@@ -96,17 +78,13 @@
             </intent-filter>
         </activity>
 
-        <!-- Foreground Service -->
         <service
             android:name=".service.AsterService"
             android:exported="false"
             android:foregroundServiceType="specialUse|camera">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="device_control" />
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="device_control" />
         </service>
 
-        <!-- IPC Bound Service for aster-one communication -->
         <service
             android:name=".service.AsterIpcService"
             android:exported="true"
@@ -116,7 +94,6 @@
             </intent-filter>
         </service>
 
-        <!-- IPC Approval Activity — launched by aster-one to request IPC connection -->
         <activity
             android:name=".ui.IpcApprovalActivity"
             android:exported="true"
@@ -128,19 +105,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Interactive Prompt Activity — no-draw-overlay fallback for the
-             App Automations interactive overlay (screen_prompt/screen_approve).
-             Launched in-process by InteractiveOverlayController. -->
         <activity
             android:name=".ui.InteractivePromptActivity"
             android:exported="false"
             android:theme="@style/Theme.Aster.Transparent"
             android:excludeFromRecents="true" />
 
-        <!-- Companion face approval card. The ambient OpenAlly face Aster draws over
-             other apps is strictly DECORATIVE: a bare tap on it performs nothing
-             privileged, it lands here — a normal, tap-jacking-protected activity.
-             Launched in-process by CompanionFaceOverlay. -->
         <activity
             android:name=".ui.CompanionApprovalActivity"
             android:exported="false"
@@ -148,10 +118,6 @@
             android:launchMode="singleTop"
             android:theme="@style/Theme.Aster.Transparent" />
 
-        <!-- Draw-over-other-apps request, exported so OpenAlly can knock. OpenAlly holds
-             no SYSTEM_ALERT_WINDOW and an app may only ever request this permission for
-             ITSELF, so OpenAlly cannot ask on Aster's behalf — it launches this and
-             Aster asks for its own grant. -->
         <activity
             android:name=".ui.OverlayPermissionActivity"
             android:exported="true"
@@ -163,7 +129,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Accessibility Service -->
         <service
             android:name=".service.AsterAccessibilityService"
             android:exported="false"
@@ -171,12 +136,9 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- Notification Listener Service -->
         <service
             android:name=".service.AsterNotificationListenerService"
             android:exported="false"
@@ -186,7 +148,6 @@
             </intent-filter>
         </service>
 
-        <!-- Boot Receiver -->
         <receiver
             android:name=".receiver.BootReceiver"
             android:enabled="true"
@@ -196,7 +157,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- Notification Action Receiver -->
         <receiver
             android:name=".receiver.NotificationActionReceiver"
             android:enabled="true"
@@ -206,7 +166,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- Screen-control kill switch (Screen Control /goal P7) -->
         <receiver
             android:name=".receiver.KillSwitchReceiver"
             android:enabled="true"
@@ -215,7 +174,5 @@
                 <action android:name="com.aster.action.SCREEN_STOP" />
             </intent-filter>
         </receiver>
-
     </application>
-
 </manifest>

@@ -16,72 +16,46 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class BootReceiver : BroadcastReceiver() {
+    companion object { private const val TAG = "BootReceiver" }
 
-    companion object {
-        private const val TAG = "BootReceiver"
-    }
-
-    @Inject
-    lateinit var settingsDataStore: SettingsDataStore
+    @Inject lateinit var settingsDataStore: SettingsDataStore
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != Intent.ACTION_BOOT_COMPLETED) {
-            return
-        }
-
-        Log.d(TAG, "Boot completed, checking auto-start settings")
-
+        if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
         val pendingResult = goAsync()
-
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                // Must run before reading any auto-start state: a predecessor's
+                // persisted remote URL/token must never be reused by this build.
+                settingsDataStore.enforceOwnershipBoundary()
+
                 val autoStart = settingsDataStore.autoStartOnBoot.first()
-                if (!autoStart) {
-                    Log.d(TAG, "Auto-start disabled")
-                    return@launch
-                }
+                if (!autoStart) return@launch
 
                 val autoStartMode = settingsDataStore.autoStartMode.first()
                 val modeType = if (autoStartMode != null) {
                     ModeType.fromString(autoStartMode)
                 } else {
-                    // Fallback: check last used mode or legacy server URL
                     val lastMode = settingsDataStore.lastMode.first()
                     if (lastMode != null) {
                         ModeType.fromString(lastMode)
                     } else {
-                        val serverUrl = settingsDataStore.serverUrl.first()
-                        if (!serverUrl.isNullOrBlank()) {
-                            ModeType.REMOTE_WS
-                        } else {
-                            Log.d(TAG, "No mode configured for auto-start")
-                            return@launch
-                        }
+                        Log.d(TAG, "No mode configured for auto-start")
+                        return@launch
                     }
                 }
-
-                Log.d(TAG, "Auto-starting Aster service with mode: $modeType")
 
                 when (modeType) {
                     ModeType.REMOTE_WS -> {
                         val serverUrl = settingsDataStore.serverUrl.first()
-                        if (!serverUrl.isNullOrBlank()) {
-                            AsterService.startService(context, modeType, serverUrl)
-                        } else {
-                            Log.w(TAG, "Remote WS mode but no server URL configured")
-                        }
+                        if (!serverUrl.isNullOrBlank()) AsterService.startService(context, modeType, serverUrl)
                     }
-
-                    ModeType.IPC -> {
-                        AsterService.startService(context, modeType, "")
-                    }
-
+                    ModeType.IPC -> AsterService.startService(context, modeType, "")
                     ModeType.LOCAL_MCP -> {
                         val port = settingsDataStore.mcpPort.first()
                         AsterService.startService(context, modeType, port.toString())
                     }
                 }
-
             } catch (e: Exception) {
                 Log.e(TAG, "Error during boot handling", e)
             } finally {
