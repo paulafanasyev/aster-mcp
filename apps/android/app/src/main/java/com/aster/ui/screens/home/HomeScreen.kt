@@ -35,11 +35,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aster.R
 import com.aster.service.mode.ModeType
-import com.aster.service.overlay.SvetlanaLocalFaceView
 import com.aster.ui.components.AnimatedEntrance
 import com.aster.ui.components.AsterButton
 import com.aster.ui.components.AsterButtonVariant
@@ -131,34 +129,6 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
         ) {
-            AnimatedEntrance(delayMillis = 0, durationMillis = 350) {
-                AndroidView(
-                    factory = { context -> SvetlanaLocalFaceView(context) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(230.dp)
-                        .padding(top = 4.dp, bottom = 8.dp)
-                )
-            }
-
-            Text(
-                text = "Светлана",
-                style = MaterialTheme.typography.headlineSmall,
-                color = colors.text,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp)
-            )
-            Text(
-                text = "Ваш помощник на устройстве",
-                style = MaterialTheme.typography.bodySmall,
-                color = colors.textMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            )
-
             if (isServiceRunning && activeModes.isNotEmpty()) {
                 AnimatedEntrance(delayMillis = 0, durationMillis = 300) {
                     Column(
