@@ -1,6 +1,5 @@
 name: Release APK
 
-# Temporary bootstrap trigger: the first Svetlana APK build is started by this commit.
 on:
   push:
     branches: [main]
@@ -13,39 +12,41 @@ jobs:
   check-version:
     runs-on: ubuntu-latest
     outputs:
-      should_release: ${{ steps.check.outputs.should_release }}
       version_name: ${{ steps.check.outputs.version_name }}
       version_code: ${{ steps.check.outputs.version_code }}
+      release_tag: ${{ steps.check.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Resolve version
+      - name: Resolve version and unique release tag
         id: check
+        shell: bash
         run: |
           CURRENT=$(grep 'versionCode' apps/android/app/build.gradle.kts | grep -oP '\d+')
           VERSION_NAME=$(grep 'versionName' apps/android/app/build.gradle.kts | grep -oP '"[^"]+"' | tr -d '"')
+          BASE_TAG="v${VERSION_NAME}"
+          RELEASE_TAG="$BASE_TAG"
+
+          if git rev-parse "$BASE_TAG" >/dev/null 2>&1; then
+            RELEASE_TAG="${BASE_TAG}-build.${GITHUB_RUN_NUMBER}"
+          fi
 
           echo "versionCode: $CURRENT"
           echo "versionName: $VERSION_NAME"
-
-          if git rev-parse "v$VERSION_NAME" >/dev/null 2>&1; then
-            echo "Tag v$VERSION_NAME already exists — refusing to re-release." >&2
-            exit 1
-          fi
-
-          echo "should_release=true" >> "$GITHUB_OUTPUT"
+          echo "releaseTag: $RELEASE_TAG"
           echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
           echo "version_code=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "release_tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
   build-and-release:
     needs: check-version
-    if: needs.check-version.outputs.should_release == 'true'
     runs-on: ubuntu-latest
     env:
       VERSION_NAME: ${{ needs.check-version.outputs.version_name }}
       VERSION_CODE: ${{ needs.check-version.outputs.version_code }}
+      RELEASE_TAG: ${{ needs.check-version.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
 
@@ -86,8 +87,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ needs.check-version.outputs.version_name }}
-          name: Светлана v${{ needs.check-version.outputs.version_name }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: Светлана v${{ env.VERSION_NAME }} (${{ env.RELEASE_TAG }})
           files: apps/android/app/build/outputs/apk/release/app-release.apk
           generate_release_notes: true
         env:
