@@ -1,7 +1,9 @@
 name: Release APK
 
-# Manual only: releases are cut deliberately, never by a versionCode push.
+# Temporary bootstrap trigger: the first Svetlana APK build is started by this commit.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
