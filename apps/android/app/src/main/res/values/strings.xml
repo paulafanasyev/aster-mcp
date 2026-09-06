@@ -1,58 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-      app_name stays unmarked on purpose. It is shown in the launcher, in system
-      Settings > Accessibility, and inside error copy — none of which are brand
-      surfaces. The trademark rides brand_lockup instead.
-    -->
-    <string name="app_name">Aster by OpenAlly</string>
+    <!-- User-facing identity. Internal package/class names remain com.aster for safety. -->
+    <string name="app_name">Светлана</string>
 
-    <!-- Brand surfaces only: onboarding, Settings > About, the home app bar. -->
-    <string name="brand_by">by</string>
-    <string name="brand_openally">OpenAlly\u2122</string>
-    <string name="brand_trademark_notice">OpenAlly is a trademark of Matterward Labs Private Limited.</string>
+    <string name="brand_by">от</string>
+    <string name="brand_openally">Светлана</string>
+    <string name="brand_trademark_notice">Светлана — имя помощника приложения.</string>
 
-    <!-- Repository call to action -->
-    <string name="star_repo_title">Enjoying Aster?</string>
-    <string name="star_repo_body">Aster is free and open source. A star on GitHub helps other people find it.</string>
-    <string name="star_repo_action">Star on GitHub</string>
-    <string name="star_repo_dismiss">Not now</string>
-    <string name="star_repo_url">https://github.com/satyajiit/aster-mcp</string>
-    <string name="accessibility_service_description">Aster by OpenAlly uses accessibility to capture screen content, perform gestures, and control the device for remote management.</string>
+    <string name="star_repo_title">Нравится Светлана?</string>
+    <string name="star_repo_body">Проект открыт и развивается. Звезда на GitHub помогает другим найти его.</string>
+    <string name="star_repo_action">Открыть GitHub</string>
+    <string name="star_repo_dismiss">Не сейчас</string>
+    <string name="star_repo_url">https://github.com/paulafanasyev/aster-mcp</string>
+    <string name="accessibility_service_description">Светлана использует специальные возможности Android для чтения содержимого экрана, выполнения жестов и управления устройством.</string>
 
-    <!-- Connection -->
-    <string name="connect_title">Connect to Server</string>
-    <string name="server_host">Server Host</string>
-    <string name="server_port">Port</string>
-    <string name="connect">Connect</string>
-    <string name="connecting">Connecting…</string>
-    <string name="disconnect">Disconnect</string>
+    <string name="connect_title">Подключение к серверу</string>
+    <string name="server_host">Адрес сервера</string>
+    <string name="server_port">Порт</string>
+    <string name="connect">Подключить</string>
+    <string name="connecting">Подключение…</string>
+    <string name="disconnect">Отключить</string>
 
-    <!-- Status -->
-    <string name="status_connected">Connected</string>
-    <string name="status_disconnected">Disconnected</string>
-    <string name="status_pending">Pending Approval</string>
-    <string name="status_rejected">Rejected</string>
+    <string name="status_connected">Подключено</string>
+    <string name="status_disconnected">Отключено</string>
+    <string name="status_pending">Ожидается подтверждение</string>
+    <string name="status_rejected">Отклонено</string>
 
-    <!-- Permissions -->
-    <string name="permissions_title">Permissions</string>
-    <string name="permission_granted">Granted</string>
-    <string name="permission_denied">Denied</string>
-    <string name="grant_permission">Grant</string>
+    <string name="permissions_title">Разрешения</string>
+    <string name="permission_granted">Разрешено</string>
+    <string name="permission_denied">Запрещено</string>
+    <string name="grant_permission">Разрешить</string>
 
-    <!-- Notifications -->
-    <string name="notification_channel_name">Aster Service</string>
-    <string name="notification_channel_description">Keeps Aster running in the background</string>
-    <string name="notification_title">Aster Active</string>
-    <string name="notification_text_connected">Connected to server</string>
-    <string name="notification_text_disconnected">Disconnected</string>
+    <string name="notification_channel_name">Служба Светланы</string>
+    <string name="notification_channel_description">Поддерживает работу Светланы в фоновом режиме</string>
+    <string name="notification_title">Светлана активна</string>
+    <string name="notification_text_connected">Подключено к серверу</string>
+    <string name="notification_text_disconnected">Соединение отключено</string>
 
-    <!-- IPC -->
-    <string name="ipc_service_description">Allows aster-one to communicate with Aster via secure IPC</string>
+    <string name="ipc_service_description">Позволяет локальному помощнику безопасно взаимодействовать со Светланой через IPC</string>
 
-    <!-- Companion face (the ambient OpenAlly face Aster draws beside the camera cutout) -->
-    <string name="companion_approval_title">OpenAlly companion</string>
-    <string name="companion_approval_body">The companion face is decorative. Open OpenAlly to interact.</string>
-    <string name="companion_approval_open">Open OpenAlly</string>
-    <string name="companion_overlay_permission_hint">Pick Aster from the list to let it draw the companion face over other apps.</string>
+    <string name="companion_approval_title">Помощник Светлана</string>
+    <string name="companion_approval_body">Лицо помощника является декоративным. Откройте Светлану для взаимодействия.</string>
+    <string name="companion_approval_open">Открыть Светлану</string>
+    <string name="companion_overlay_permission_hint">Выберите Светлану в списке, чтобы разрешить ей отображать лицо поверх других приложений.</string>
 </resources>
