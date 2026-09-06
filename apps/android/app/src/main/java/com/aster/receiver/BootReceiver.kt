@@ -25,10 +25,6 @@ class BootReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Must run before reading any auto-start state: a predecessor's
-                // persisted remote URL/token must never be reused by this build.
-                settingsDataStore.enforceOwnershipBoundary()
-
                 val autoStart = settingsDataStore.autoStartOnBoot.first()
                 if (!autoStart) return@launch
 
