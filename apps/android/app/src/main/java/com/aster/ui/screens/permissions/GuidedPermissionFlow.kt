@@ -9,12 +9,9 @@ import com.aster.util.PermissionType
 import com.aster.util.PermissionUtils
 
 /**
- * Drives the "Ask all together" guided grant flow: one batched system request
- * for every missing runtime permission, then each missing special-access
- * Settings screen in sequence, advancing when the user returns to the app.
- *
- * Each special-access screen is attempted once per run — returning without
- * granting moves on to the next instead of looping on the same screen.
+ * Пошаговый сценарий выдачи всех необходимых разрешений: один системный запрос
+ * для недостающих runtime-разрешений, затем экраны специальных разрешений
+ * последовательно, с переходом вперед после возврата в приложение.
  */
 class GuidedPermissionFlow(
     private val launchRuntime: (Array<String>) -> Unit,
@@ -42,21 +39,19 @@ class GuidedPermissionFlow(
         if (stepsTotal == 0) return
         isRunning = true
         if (runtime.isNotEmpty()) {
-            currentStepLabel = "System permissions"
+            currentStepLabel = "Системные разрешения"
             launchRuntime(runtime.toTypedArray())
         } else {
             advance(context)
         }
     }
 
-    /** Call from the RequestMultiplePermissions result callback. */
     fun onRuntimeResult(context: Context) {
         if (!isRunning) return
         stepsDone++
         advance(context)
     }
 
-    /** Call on every ON_RESUME; advances past the Settings screen the user just left. */
     fun onResume(context: Context) {
         if (!isRunning || !awaitingSettingsReturn) return
         awaitingSettingsReturn = false
@@ -65,8 +60,7 @@ class GuidedPermissionFlow(
     }
 
     private fun advance(context: Context) {
-        val next = PermissionUtils.missingSpecialAccess(context)
-            .firstOrNull { it !in attempted }
+        val next = PermissionUtils.missingSpecialAccess(context).firstOrNull { it !in attempted }
         if (next == null) {
             finish()
             return
