@@ -134,12 +134,12 @@ fun AsterNavHost(navController: NavHostController, startDestination: String, mod
                 onNavigateToChat = { navController.navigate(Screen.Chat.route) }
             )
         }
-        composable(Screen.Chat.route, enterTransition = { slideInHorizontally({ it }, tween(300)) + fadeIn(tween(300)) }, exitTransition = { slideOutHorizontally({ it }, tween(300)) + fadeOut(tween(300)) }) {
-            ChatScreen(onNavigateBack = { navController.popBackStack() })
-        }
-        composable(Screen.Contacts.route, enterTransition = { slideInHorizontally({ it }, tween(300)) + fadeIn(tween(300)) }, exitTransition = { slideOutHorizontally({ it }, tween(300)) + fadeOut(tween(300)) }) {
-            ContactsScreen(onNavigateBack = { navController.popBackStack() })
-        }
+        composable(
+            Screen.Chat.route,
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) + fadeIn(tween(300)) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) + fadeOut(tween(300)) }
+        ) { ChatScreen(onNavigateBack = { navController.popBackStack() }) }
+        composable(Screen.Contacts.route) { ContactsScreen(onNavigateBack = { navController.popBackStack() }) }
         composable(Screen.IpcDashboard.route) {
             IpcDashboardScreen(onNavigateBack = { navController.popBackStack() }, onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) }, onNavigateToLogs = { navController.navigate(Screen.Logs.route) })
         }
@@ -152,20 +152,14 @@ fun AsterNavHost(navController: NavHostController, startDestination: String, mod
         composable(Screen.RemoteDashboard.route) {
             RemoteDashboardScreen(onNavigateBack = { navController.popBackStack() }, onDisconnected = { navController.navigate(Screen.Home.route) { popUpTo(Screen.RemoteDashboard.route) { inclusive = true } } }, onNavigateToLogs = { navController.navigate(Screen.Logs.route) })
         }
-        composable(Screen.Settings.route) {
-            SettingsScreen(onNavigateBack = { navController.popBackStack() })
-        }
-        composable(Screen.Logs.route) {
-            LogScreen(onNavigateBack = { navController.popBackStack() })
-        }
+        composable(Screen.Settings.route) { SettingsScreen(onNavigateBack = { navController.popBackStack() }) }
+        composable(Screen.Logs.route) { LogScreen(onNavigateBack = { navController.popBackStack() }) }
         composable(Screen.PermissionAlert.route, enterTransition = { fadeIn(tween(300)) }, exitTransition = { fadeOut(tween(300)) }) {
             PermissionAlertScreen(
                 onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) { popUpTo(Screen.PermissionAlert.route) { inclusive = true } } },
                 onSkip = { navController.navigate(Screen.Home.route) { popUpTo(Screen.PermissionAlert.route) { inclusive = true } } }
             )
         }
-        composable(Screen.Permissions.route) {
-            PermissionsScreen(onNavigateBack = { navController.popBackStack() })
-        }
+        composable(Screen.Permissions.route) { PermissionsScreen(onNavigateBack = { navController.popBackStack() }) }
     }
 }
