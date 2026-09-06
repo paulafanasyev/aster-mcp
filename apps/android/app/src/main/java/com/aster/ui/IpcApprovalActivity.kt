@@ -488,7 +488,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                     guidedFlow.currentStepLabel?.let { label ->
                                         Spacer(Modifier.height(6.dp))
                                         Text(
-                                            text = "Step ${(guidedFlow.stepsDone + 1).coerceAtMost(guidedFlow.stepsTotal)} of ${guidedFlow.stepsTotal} — $label",
+                                            text = "Шаг ${(guidedFlow.stepsDone + 1).coerceAtMost(guidedFlow.stepsTotal)} из ${guidedFlow.stepsTotal} — $label",
                                             style = MaterialTheme.typography.labelSmall,
                                             color = colors.textSubtle
                                         )

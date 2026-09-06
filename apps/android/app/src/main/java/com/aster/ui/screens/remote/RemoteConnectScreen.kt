@@ -106,7 +106,7 @@ fun RemoteConnectScreen(
         containerColor = colors.bg,
         topBar = {
             AsterTopBar(
-                title = "Remote Server",
+                title = "Удалённый сервер",
                 onBack = onNavigateBack
             )
         },
@@ -127,7 +127,7 @@ fun RemoteConnectScreen(
                             if (!PermissionUtils.checkAllPermissions(context).allGranted) {
                                 Toast.makeText(
                                     context,
-                                    "Grant all permissions before connecting",
+                                    "Перед подключением предоставьте все необходимые разрешения",
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 onNavigateToPermissions()
@@ -137,8 +137,8 @@ fun RemoteConnectScreen(
                         }
                     },
                     text = when {
-                        isConnecting -> "Cancel"
-                        else -> "Connect"
+                        isConnecting -> "Отмена"
+                        else -> "Подключить"
                     },
                     variant = if (isConnecting) AsterButtonVariant.DANGER else AsterButtonVariant.PRIMARY,
                     enabled = serverUrl.isNotBlank() || isConnecting,
@@ -180,7 +180,7 @@ fun RemoteConnectScreen(
             ) {
                 StatusBanner(
                     message = lastError
-                        ?: "Connection failed. Check the server URL and ensure the aster-mcp server is running.",
+                        ?: "Не удалось подключиться. Проверьте адрес сервера и убедитесь, что aster-mcp запущен.",
                     bannerColor = colors.error
                 )
             }
@@ -191,7 +191,7 @@ fun RemoteConnectScreen(
                 exit = fadeOut()
             ) {
                 StatusBanner(
-                    message = "Connection rejected. Approve this device from the Aster dashboard (localhost:5989).",
+                    message = "Подключение отклонено. Разрешите это устройство в панели Aster (localhost:5989).",
                     bannerColor = colors.warning
                 )
             }
@@ -214,14 +214,14 @@ fun RemoteConnectScreen(
                         )
 
                         Text(
-                            text = "Awaiting Approval...",
+                            text = "Ожидание подтверждения…",
                             style = MaterialTheme.typography.titleMedium,
                             color = colors.warning,
                             textAlign = TextAlign.Center
                         )
 
                         Text(
-                            text = "Open the Aster dashboard at localhost:5989 (or your server address) and approve this device.",
+                            text = "Откройте панель Aster по адресу localhost:5989 (или адресу вашего сервера) и разрешите это устройство.",
                             style = MaterialTheme.typography.bodySmall,
                             color = colors.textSubtle,
                             textAlign = TextAlign.Center
@@ -250,18 +250,18 @@ fun RemoteConnectScreen(
                         Column {
                             Text(
                                 text = if (connectionState == ConnectionState.RECONNECTING) {
-                                    "Reconnecting..."
+                                    "Повторное подключение…"
                                 } else {
-                                    "Connecting..."
+                                    "Подключение…"
                                 },
                                 style = MaterialTheme.typography.titleSmall,
                                 color = BlueAccent
                             )
                             Text(
                                 text = if (connectionState == ConnectionState.RECONNECTING) {
-                                    "Restoring WebSocket connection"
+                                    "Восстановление WebSocket-соединения"
                                 } else {
-                                    "Establishing WebSocket connection"
+                                    "Установка WebSocket-соединения"
                                 },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = colors.textSubtle
@@ -309,7 +309,7 @@ private fun ServerAddressCard(
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
-                    text = "Server Address",
+                    text = "Адрес сервера",
                     style = MaterialTheme.typography.titleMedium,
                     color = colors.text,
                     fontWeight = FontWeight.SemiBold
@@ -317,7 +317,7 @@ private fun ServerAddressCard(
             }
 
             Text(
-                text = "Enter the WebSocket URL of your running aster-mcp server. Default port is 5987.",
+                text = "Введите WebSocket-адрес запущенного сервера aster-mcp. Порт по умолчанию — 5987.",
                 style = MaterialTheme.typography.bodySmall,
                 color = colors.textSubtle
             )
@@ -325,7 +325,7 @@ private fun ServerAddressCard(
             AsterTextField(
                 value = serverUrl,
                 onValueChange = onServerUrlChange,
-                label = "Server URL",
+                label = "Адрес сервера",
                 placeholder = "ws://192.168.1.100:5987",
                 modifier = Modifier.fillMaxWidth()
             )
@@ -337,7 +337,7 @@ private fun ServerAddressCard(
                 ProtocolChip(
                     icon = FeatherIcons.Lock,
                     label = "wss://",
-                    description = "Encrypted",
+                    description = "Зашифровано",
                     isSecure = true
                 )
                 ProtocolChip(
@@ -360,20 +360,20 @@ private fun InstallationSection() {
     val colors = AsterTheme.colors
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        AsterSectionHeader(label = "Setup Guide")
+        AsterSectionHeader(label = "Инструкция по настройке")
 
         AsterCard(modifier = Modifier.fillMaxWidth()) {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 // -- Install via NPM --
                 OptionHeader(
-                    label = "Step 1",
-                    title = "Install via NPM",
+                    label = "Шаг 1",
+                    title = "Установка через NPM",
                     tag = null,
                     icon = FeatherIcons.Package
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    NumberedStep(1, "Install the aster-mcp server globally on your computer:")
+                    NumberedStep(1, "Установите сервер aster-mcp глобально на компьютере:")
                 }
 
                 CodeBlock(
@@ -382,7 +382,7 @@ private fun InstallationSection() {
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    NumberedStep(2, "Start the server:")
+                    NumberedStep(2, "Запустите сервер:")
                 }
 
                 CodeBlock(
@@ -391,24 +391,24 @@ private fun InstallationSection() {
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    NumberedStep(3, "The server starts on 3 ports:")
+                    NumberedStep(3, "Сервер запускается на 3 портах:")
                 }
 
                 // Port info
-                PortInfoRow(port = "5987", label = "WebSocket", description = "Device connection")
-                PortInfoRow(port = "5988", label = "MCP HTTP", description = "AI client endpoint")
+                PortInfoRow(port = "5987", label = "WebSocket", description = "Подключение устройства")
+                PortInfoRow(port = "5988", label = "MCP HTTP", description = "Точка подключения ИИ-клиента")
                 PortInfoRow(
                     port = "5989",
-                    label = "Dashboard",
-                    description = "Web UI for management"
+                    label = "Панель управления",
+                    description = "Веб-интерфейс управления"
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     NumberedStep(
                         4,
-                        "Enter ws://<your-ip>:5987 in the Server Address above and tap Connect"
+                        "Введите ws://<ваш-ip>:5987 в поле «Адрес сервера» выше и нажмите «Подключить»"
                     )
-                    NumberedStep(5, "Approve the device from the Aster dashboard at localhost:5989")
+                    NumberedStep(5, "Разрешите устройство в панели Aster по адресу localhost:5989")
                 }
 
                 // MCP config for AI client
@@ -420,14 +420,14 @@ private fun InstallationSection() {
                 )
 
                 Text(
-                    text = "MCP Client Config",
+                    text = "Настройка MCP-клиента",
                     style = MaterialTheme.typography.titleSmall,
                     color = BlueAccent,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
-                    text = "Add this to your Claude Desktop / Cursor .mcp.json:",
+                    text = "Добавьте это в .mcp.json Claude Desktop / Cursor:",
                     style = MaterialTheme.typography.bodySmall,
                     color = colors.textSubtle
                 )
@@ -477,7 +477,7 @@ private fun OpenClawSection() {
             )
 
             Text(
-                text = "Skill",
+                text = "Навык",
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
@@ -489,7 +489,7 @@ private fun OpenClawSection() {
         }
 
         Text(
-            text = "Aster is available as a skill on ClawHub for OpenClaw, MoltBot, and ClawBot. Install it directly:",
+            text = "Aster доступен как навык ClawHub для OpenClaw, MoltBot и ClawBot. Установите его напрямую:",
             style = MaterialTheme.typography.bodySmall,
             color = colors.textSubtle
         )
@@ -500,13 +500,13 @@ private fun OpenClawSection() {
         )
 
         Text(
-            text = "Or browse at clawhub.com/skills/aster",
+            text = "Или откройте clawhub.com/skills/aster",
             style = MaterialTheme.typography.labelSmall,
             color = openClawColor
         )
 
         Text(
-            text = "Once installed, the aster-mcp server runs automatically within OpenClaw. Just connect this device to the server and the AI can use all 40+ tools.",
+            text = "После установки сервер aster-mcp автоматически запускается в OpenClaw. Подключите это устройство к серверу, и ИИ получит доступ ко всем 40+ инструментам.",
             style = MaterialTheme.typography.bodySmall,
             color = colors.textSubtle
         )
@@ -635,7 +635,7 @@ private fun AboutRemoteSection() {
     val colors = AsterTheme.colors
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        AsterSectionHeader(label = "About")
+        AsterSectionHeader(label = "О приложении")
 
         Row(
             modifier = Modifier
@@ -656,17 +656,17 @@ private fun AboutRemoteSection() {
 
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    text = "What is Remote Server?",
+                    text = "Что такое удалённый сервер?",
                     style = MaterialTheme.typography.titleSmall,
                     color = BlueAccent,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
-                    text = "The aster-mcp NPM package runs a gateway server on your computer. " +
-                            "This device connects to it via WebSocket (port 5987), while your AI clients " +
-                            "(Claude Desktop, Cursor, etc.) connect via the MCP HTTP endpoint (port 5988). " +
-                            "The server bridges the two, giving your AI 40+ tools to control this Android device.",
+                    text = "Пакет aster-mcp для NPM запускает сервер-шлюз на вашем компьютере. " +
+                            "Это устройство подключается к нему через WebSocket (порт 5987), а ваши ИИ-клиенты " +
+                            "(Claude Desktop, Cursor и другие) подключаются через MCP HTTP (порт 5988). " +
+                            "Сервер соединяет их и предоставляет ИИ 40+ инструментов для управления этим Android-устройством.",
                     style = MaterialTheme.typography.bodySmall,
                     color = colors.textSubtle
                 )
@@ -709,15 +709,15 @@ private fun TailscaleRecommendationSection() {
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = "Tailscale Recommended",
+                text = "Рекомендуется Tailscale",
                 style = MaterialTheme.typography.titleSmall,
                 color = greenColor,
                 fontWeight = FontWeight.SemiBold
             )
 
             Text(
-                text = "For remote access without port forwarding, install Tailscale on both your server and this device. " +
-                        "Aster auto-detects Tailscale IPs. Use ws://<tailscale-ip>:5987 for a secure, encrypted connection from anywhere.",
+                text = "Для удалённого доступа без проброса портов установите Tailscale на сервере и этом устройстве. " +
+                        "Aster автоматически обнаруживает IP Tailscale. Используйте ws://<tailscale-ip>:5987 для защищённого зашифрованного подключения из любой точки.",
                 style = MaterialTheme.typography.bodySmall,
                 color = colors.textSubtle
             )
@@ -750,7 +750,7 @@ private fun TailscaleDetectedCard(
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
-                    text = "Tailscale Detected",
+                    text = "Tailscale обнаружен",
                     style = MaterialTheme.typography.titleSmall,
                     color = colors.success
                 )
@@ -776,7 +776,7 @@ private fun TailscaleDetectedCard(
                         )
                     } else {
                         Text(
-                            text = "Your Tailscale IP",
+                            text = "Ваш IP Tailscale",
                             style = MaterialTheme.typography.bodySmall,
                             color = colors.textSubtle
                         )
@@ -790,7 +790,7 @@ private fun TailscaleDetectedCard(
 
                 AsterButton(
                     onClick = onUseTailscale,
-                    text = "Use",
+                    text = "Использовать",
                     variant = AsterButtonVariant.SECONDARY
                 )
             }

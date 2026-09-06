@@ -263,7 +263,7 @@ private fun ApprovalBody(
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "${(if (prompt.editable) edited[i] else variant.text).length} chars",
+                            text = "${(if (prompt.editable) edited[i] else variant.text).length} симв.",
                             style = MaterialTheme.typography.labelSmall,
                             color = FaintText,
                             modifier = Modifier.weight(1f),
