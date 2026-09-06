@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -70,7 +67,18 @@ fun ContactsScreen(onNavigateBack: () -> Unit) {
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Владелец и разработчик проекта «Мир Самозанятых»",
+            text = "Разработчик",
+            style = MaterialTheme.typography.titleMedium,
+            color = colors.textMuted,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            text = "Автономная Некоммерческая Организация Центр Поддержки Самозанятых \"Мир Самозанятых\"",
+            style = MaterialTheme.typography.bodyMedium,
+            color = colors.textMuted
+        )
+        Text(
+            text = "ИНН 9724016805",
             style = MaterialTheme.typography.bodyMedium,
             color = colors.textMuted
         )
