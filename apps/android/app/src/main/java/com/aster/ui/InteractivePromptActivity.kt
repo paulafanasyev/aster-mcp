@@ -227,7 +227,7 @@ private fun ApprovalBody(
         BrandHeader(prompt.aiName, prompt.title)
         Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Hairline))
         Text(
-            text = "Choose a draft to publish",
+            text = "Выберите вариант для публикации",
             style = MaterialTheme.typography.titleSmall,
             color = TextColor,
             fontWeight = FontWeight.Bold,
@@ -243,7 +243,7 @@ private fun ApprovalBody(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = "OPTION ${i + 1}",
+                        text = "ВАРИАНТ ${i + 1}",
                         style = MaterialTheme.typography.labelSmall,
                         color = AccentTeal,
                         fontWeight = FontWeight.Bold,
@@ -263,7 +263,7 @@ private fun ApprovalBody(
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "${(if (prompt.editable) edited[i] else variant.text).length} chars",
+                            text = "${(if (prompt.editable) edited[i] else variant.text).length} симв.",
                             style = MaterialTheme.typography.labelSmall,
                             color = FaintText,
                             modifier = Modifier.weight(1f),
@@ -276,7 +276,7 @@ private fun ApprovalBody(
                                 contentColor = OnAccent,
                             ),
                         ) {
-                            Text("Use this  ›")
+                            Text("Использовать этот  ›")
                         }
                     }
                 }
@@ -284,7 +284,7 @@ private fun ApprovalBody(
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = if (prompt.editable) "Tap a draft to edit" else "Pick a draft",
+                text = if (prompt.editable) "Нажмите на вариант, чтобы изменить его" else "Выберите вариант",
                 style = MaterialTheme.typography.labelMedium,
                 color = FaintText,
                 modifier = Modifier.weight(1f),
@@ -294,7 +294,7 @@ private fun ApprovalBody(
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = RejectRed),
             ) {
-                Text("Reject")
+                Text("Отклонить")
             }
         }
     }

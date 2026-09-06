@@ -78,7 +78,7 @@ fun ToolsSection(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         AsterSectionHeader(
-            label = "Available Tools",
+            label = "Доступные инструменты",
             count = tools.size
         )
 
@@ -119,13 +119,13 @@ fun ToolsSection(
 
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = category,
+                                text = categoryLabel(category),
                                 style = MaterialTheme.typography.titleSmall,
                                 color = colors.text,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "${categoryTools.size} tools",
+                                text = "${categoryTools.size} инструментов",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = colors.textMuted
                             )
@@ -133,7 +133,7 @@ fun ToolsSection(
 
                         Icon(
                             imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                            contentDescription = if (isExpanded) "Collapse" else "Expand",
+                            contentDescription = if (isExpanded) "Свернуть" else "Развернуть",
                             tint = colors.textMuted,
                             modifier = Modifier.size(20.dp)
                         )
@@ -158,6 +158,22 @@ fun ToolsSection(
             }
         }
     }
+}
+
+private fun categoryLabel(category: String): String = when (category) {
+    "Управление экраном" -> "Управление экраном"
+    "Устройство" -> "Устройство"
+    "Файлы" -> "Файлы"
+    "Камера" -> "Камера"
+    "Связь" -> "Связь"
+    "Уведомления" -> "Уведомления"
+    "Мультимедиа" -> "Мультимедиа"
+    "Хранилище" -> "Хранилище"
+    "Приложения" -> "Приложения"
+    "Система" -> "Система"
+    "Наложения" -> "Наложения"
+    "Будильники" -> "Будильники"
+    else -> "Другое"
 }
 
 // =============================================================================
@@ -213,17 +229,17 @@ private fun ToolRow(
 // =============================================================================
 
 private fun getCategoryIcon(category: String): ImageVector = when (category) {
-    "Screen Control" -> FeatherIcons.Monitor
-    "Device" -> FeatherIcons.Smartphone
-    "Files" -> FeatherIcons.Folder
-    "Camera" -> FeatherIcons.Camera
-    "Communication" -> FeatherIcons.MessageCircle
-    "Notifications" -> FeatherIcons.Bell
-    "Media" -> FeatherIcons.Volume2
-    "Storage" -> FeatherIcons.HardDrive
-    "Apps" -> FeatherIcons.Package
-    "System" -> FeatherIcons.Terminal
-    "Overlays" -> FeatherIcons.Layers
-    "Alarms" -> FeatherIcons.Clock
+    "Управление экраном" -> FeatherIcons.Monitor
+    "Устройство" -> FeatherIcons.Smartphone
+    "Файлы" -> FeatherIcons.Folder
+    "Камера" -> FeatherIcons.Camera
+    "Связь" -> FeatherIcons.MessageCircle
+    "Уведомления" -> FeatherIcons.Bell
+    "Мультимедиа" -> FeatherIcons.Volume2
+    "Хранилище" -> FeatherIcons.HardDrive
+    "Приложения" -> FeatherIcons.Package
+    "Система" -> FeatherIcons.Terminal
+    "Наложения" -> FeatherIcons.Layers
+    "Будильники" -> FeatherIcons.Clock
     else -> FeatherIcons.Terminal
 }
