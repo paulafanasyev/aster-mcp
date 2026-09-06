@@ -54,12 +54,7 @@ jobs:
             echo '--- PACKAGE ---'
             adb shell dumpsys package com.aster | head -n 40
             echo '--- UI DUMP ---'
-            adb exec-out uiautomator dump /sdcard/window.xml >/dev/null
-            adb shell cat /sdcard/window.xml | head -c 20000
-            echo
+            adb exec-out uiautomator dump /dev/tty
             echo '--- CRASH CHECK ---'
-            if adb logcat -d -t 400 | grep -E 'FATAL EXCEPTION|AndroidRuntime|Process: com.aster' ; then
-              echo 'CRASH_DETECTED'
-              exit 1
-            fi
+            if adb logcat -d -t 400 | grep -E 'FATAL EXCEPTION|AndroidRuntime|Process: com.aster'; then echo 'CRASH_DETECTED'; exit 1; fi
             echo 'EMULATOR_AUDIT_PASS'
