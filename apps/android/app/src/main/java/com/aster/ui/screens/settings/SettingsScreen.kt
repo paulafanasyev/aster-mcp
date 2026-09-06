@@ -146,7 +146,7 @@ private fun ThemeChip(icon: ImageVector, label: String, isSelected: Boolean, onC
     val borderColor = if (isSelected) colors.primary else colors.border
     val bgColor = if (isSelected) colors.primary.copy(alpha = 0.10f) else colors.surface2
     val contentColor = if (isSelected) colors.primary else colors.textSubtle
-    Column(modifier.clip(RoundedCornerShape(12.dp)).border(if (isSelected) 1.5.dp else 1.dp, borderColor, RoundedCornerShape(12.dp)).background(bgColor).clickable(onClick).padding(vertical = 14.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(modifier.clip(RoundedCornerShape(12.dp)).border(if (isSelected) 1.5.dp else 1.dp, borderColor, RoundedCornerShape(12.dp)).background(bgColor).clickable { onClick() }.padding(vertical = 14.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Icon(icon, label, tint = contentColor, modifier = Modifier.size(22.dp))
         Text(label, style = MaterialTheme.typography.labelMedium, color = contentColor, fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal)
     }
@@ -157,7 +157,7 @@ private fun ModeOption(icon: ImageVector, label: String, description: String, is
     val colors = AsterTheme.colors
     val borderColor = if (isSelected) colors.primary else colors.border
     val bgColor = if (isSelected) colors.primary.copy(alpha = 0.06f) else colors.surface2
-    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).border(1.dp, borderColor, RoundedCornerShape(10.dp)).background(bgColor).clickable(onClick).padding(14.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).border(1.dp, borderColor, RoundedCornerShape(10.dp)).background(bgColor).clickable { onClick() }.padding(14.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
         Icon(icon, null, tint = if (isSelected) colors.primary else colors.textSubtle, modifier = Modifier.size(20.dp))
         Column(Modifier.weight(1f)) {
             Text(label, style = MaterialTheme.typography.bodyMedium, color = if (isSelected) colors.text else colors.textSubtle, fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal)
