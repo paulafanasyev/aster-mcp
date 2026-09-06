@@ -8,7 +8,7 @@ on:
 jobs:
   emulator-audit:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,21 +40,26 @@ jobs:
           api-level: 35
           target: google_apis
           arch: x86_64
+          cores: 4
+          ram-size: 4096M
+          heap-size: 1024M
           force-avd-creation: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-boot-timeout: 900
+          emulator-options: -no-window -no-snapshot -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           script: |
             set -e
             adb wait-for-device
+            adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
             adb shell getprop ro.build.version.sdk
             adb install -r apps/android/app/build/outputs/apk/debug/app-debug.apk
             adb shell pm clear com.aster || true
             adb shell monkey -p com.aster 1
             sleep 8
             echo '--- PACKAGE ---'
-            adb shell dumpsys package com.aster | head -n 40
+            adb shell dumpsys package com.aster | head -n 60
             echo '--- UI DUMP ---'
             adb exec-out uiautomator dump /dev/tty
             echo '--- CRASH CHECK ---'
-            if adb logcat -d -t 400 | grep -E 'FATAL EXCEPTION|AndroidRuntime|Process: com.aster'; then echo 'CRASH_DETECTED'; exit 1; fi
+            if adb logcat -d -t 500 | grep -E 'FATAL EXCEPTION|AndroidRuntime|Process: com.aster'; then echo 'CRASH_DETECTED'; exit 1; fi
             echo 'EMULATOR_AUDIT_PASS'
