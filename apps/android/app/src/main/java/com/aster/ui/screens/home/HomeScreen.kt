@@ -31,8 +31,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,7 +48,6 @@ import com.aster.ui.theme.AsterTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Activity
 import compose.icons.feathericons.Star
-import compose.icons.feathericons.Youtube
 
 private val IpcColor = Color(0xFFF59E0B)
 private val McpColor = Color(0xFF8B5CF6)
@@ -70,6 +67,7 @@ fun HomeScreen(
     onNavigateToMcpDashboard: () -> Unit,
     onNavigateToRemoteDashboard: () -> Unit,
     onNavigateToLogs: () -> Unit,
+    onNavigateToContacts: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val colors = AsterTheme.colors
@@ -265,10 +263,8 @@ fun HomeScreen(
                 )
             }
 
-            val uriHandler = LocalUriHandler.current
             val starAmber = Color(0xFFF59E0B)
             val repoUrl = stringResource(R.string.star_repo_url)
-            val youtubeUrl = stringResource(R.string.youtube_url)
 
             if (!starPromptDismissed) {
                 Spacer(modifier = Modifier.height(24.dp))
@@ -276,7 +272,9 @@ fun HomeScreen(
                 AnimatedEntrance(delayMillis = 550) {
                     StarRepoCard(
                         onStar = {
-                            uriHandler.openUri(repoUrl)
+                            android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(repoUrl)).also {
+                                it.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
                             viewModel.dismissStarPrompt()
                         },
                         onDismiss = viewModel::dismissStarPrompt
@@ -284,55 +282,24 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            val ytRed = Color(0xFFFF0000)
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 32.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = FeatherIcons.Youtube,
-                    contentDescription = null,
-                    tint = ytRed,
-                    modifier = Modifier.size(18.dp)
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = stringResource(R.string.subscribe_to),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = colors.textMuted
-                )
-
-                Text(
-                    text = "@GamesPatch",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = ytRed,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .clickable { uriHandler.openUri(youtubeUrl) }
-                )
-
-                Text(
-                    text = stringResource(R.string.on_youtube),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = colors.textMuted
-                )
-            }
+            AsterButton(
+                onClick = onNavigateToContacts,
+                text = "Контакты",
+                variant = AsterButtonVariant.SECONDARY,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             if (starPromptDismissed) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 32.dp)
+                        .padding(vertical = 24.dp)
                         .clickable {
-                            uriHandler.openUri(repoUrl)
+                            android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(repoUrl)).also {
+                                it.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
                         },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
