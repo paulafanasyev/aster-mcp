@@ -31,6 +31,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -75,6 +77,7 @@ fun HomeScreen(
     val isServiceRunning = viewModel.isServiceRunning
     val activeModes = viewModel.activeModeTypes
     val starPromptDismissed by viewModel.starPromptDismissed.collectAsState()
+    val uriHandler = LocalUriHandler.current
 
     Column(
         modifier = Modifier
@@ -272,9 +275,7 @@ fun HomeScreen(
                 AnimatedEntrance(delayMillis = 550) {
                     StarRepoCard(
                         onStar = {
-                            android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(repoUrl)).also {
-                                it.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
+                            uriHandler.openUri(repoUrl)
                             viewModel.dismissStarPrompt()
                         },
                         onDismiss = viewModel::dismissStarPrompt
@@ -296,11 +297,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 24.dp)
-                        .clickable {
-                            android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(repoUrl)).also {
-                                it.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
-                        },
+                        .clickable { uriHandler.openUri(repoUrl) },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
