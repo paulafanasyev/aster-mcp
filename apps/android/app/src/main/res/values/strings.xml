@@ -38,7 +38,7 @@
 
     <string name="ipc_service_description">Позволяет локальному помощнику безопасно взаимодействовать со Светланой через IPC</string>
 
-    <!-- Лицо Aster сохраняется и используется как полноценная часть помощника Светлана. -->
+    <!-- Лицо сохраняется и используется как полноценная часть помощника Светлана. -->
     <string name="companion_approval_title">Помощник Светлана</string>
     <string name="companion_approval_body">Откройте Светлану для взаимодействия с помощником.</string>
     <string name="companion_approval_open">Открыть Светлану</string>
@@ -48,7 +48,7 @@
     <string name="android_device_controller">Управление Android-устройством</string>
     <string name="onboarding_description">Управляйте устройством Android через IPC, локальный MCP-сервер или удалённое WebSocket-соединение. Открыто и с приоритетом конфиденциальности.</string>
     <string name="ipc_mode">Режим IPC</string>
-    <string name="ipc_mode_description">Прямое подключение к aster-one через Android Binder</string>
+    <string name="ipc_mode_description">Прямое подключение к Светлане через Android Binder</string>
     <string name="local_mcp_server">Локальный MCP-сервер</string>
     <string name="local_mcp_server_description">Запускает MCP-сервер непосредственно на устройстве</string>
     <string name="remote_websocket">Удалённый WebSocket</string>
@@ -72,15 +72,15 @@
     <string name="choose_how_to_connect">Выберите способ подключения</string>
     <string name="choose_how_to_connect_description">Выберите режим подключения для управления этим устройством</string>
     <string name="remote_server">Удалённый сервер</string>
-    <string name="remote_server_tagline">Через модуль aster-mcp NPM</string>
-    <string name="remote_server_description">Установите сервер aster-mcp через NPM, подключите устройство по WebSocket и управляйте им из Claude, Cursor или любого MCP-клиента.</string>
+    <string name="remote_server_tagline">Удалённый сервер Светланы</string>
+    <string name="remote_server_description">Подключите устройство по WebSocket и управляйте им из Claude, Cursor или любого MCP-клиента.</string>
     <string name="feature_npm_install">npm install</string>
     <string name="feature_40_tools">40+ инструментов</string>
     <string name="feature_webhooks">Вебхуки</string>
     <string name="feature_tailscale_ready">Готово для Tailscale</string>
     <string name="recommended">Рекомендуется</string>
     <string name="ipc_mode_tagline">Прямой мост к устройству</string>
-    <string name="ipc_mode_home_description">Подключение aster-one напрямую к устройству через нативный Android IPC. Сеть не нужна — быстро и надёжно.</string>
+    <string name="ipc_mode_home_description">Подключение Светланы напрямую к устройству через нативный Android IPC. Сеть не нужна — быстро и надёжно.</string>
     <string name="feature_zero_latency">Нулевая задержка</string>
     <string name="feature_no_network">Без сети</string>
     <string name="feature_token_auth">Авторизация токеном</string>
@@ -92,9 +92,6 @@
     <string name="feature_lan_access">Доступ по LAN</string>
     <string name="feature_tailscale">Tailscale</string>
     <string name="intermediate">Средний</string>
-    <string name="subscribe_to">Подписаться на </string>
-    <string name="on_youtube"> на YouTube</string>
-    <string name="youtube_url">https://youtube.com/@GamesPatch</string>
 
     <!-- Logs -->
     <string name="tool_call_logs">Журнал вызовов инструментов</string>
