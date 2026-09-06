@@ -31,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aster.data.local.SettingsDataStore
+import com.aster.ui.screens.chat.ChatScreen
 import com.aster.ui.screens.contacts.ContactsScreen
 import com.aster.ui.screens.home.HomeScreen
 import com.aster.ui.screens.ipc.IpcDashboardScreen
@@ -50,79 +51,41 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var settingsDataStore: SettingsDataStore
+    @Inject lateinit var settingsDataStore: SettingsDataStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         setContent {
             val themeMode by settingsDataStore.themeMode.collectAsStateWithLifecycle(initialValue = "system")
-
-            val onboardingComplete by remember {
-                settingsDataStore.onboardingComplete.map<Boolean, Boolean?> { it }
-            }.collectAsStateWithLifecycle(initialValue = null)
-
-            val isDarkTheme = when (themeMode) {
-                "dark" -> true
-                "light" -> false
-                else -> isSystemInDarkTheme()
-            }
-
+            val onboardingComplete by remember { settingsDataStore.onboardingComplete.map<Boolean, Boolean?> { it } }
+                .collectAsStateWithLifecycle(initialValue = null)
+            val isDarkTheme = when (themeMode) { "dark" -> true; "light" -> false; else -> isSystemInDarkTheme() }
             AsterTheme(darkTheme = isDarkTheme) {
                 val colors = AsterTheme.colors
-
                 when (onboardingComplete) {
-                    null -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(colors.bg)
-                        )
-                    }
-
+                    null -> Box(Modifier.fillMaxSize().background(colors.bg))
                     else -> {
                         val navController = rememberNavController()
                         val context = LocalContext.current
                         var permissionsOk by remember { mutableStateOf(true) }
-
                         val lifecycleOwner = LocalLifecycleOwner.current
                         DisposableEffect(lifecycleOwner) {
                             val observer = LifecycleEventObserver { _, event ->
                                 if (event == Lifecycle.Event.ON_RESUME) {
-                                    permissionsOk =
-                                        PermissionUtils.checkAllPermissions(context).allGranted
+                                    permissionsOk = PermissionUtils.checkAllPermissions(context).allGranted
                                 }
                             }
                             lifecycleOwner.lifecycle.addObserver(observer)
                             onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
                         }
-
-                        val startDestination = if (onboardingComplete == true) {
-                            Screen.Home.route
-                        } else {
-                            Screen.Onboarding.route
+                        val startDestination = if (onboardingComplete == true) Screen.Home.route else Screen.Onboarding.route
+                        Box(Modifier.fillMaxSize().background(colors.bg)) {
+                            AsterNavHost(navController, startDestination, Modifier.fillMaxSize())
                         }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(colors.bg)
-                        ) {
-                            AsterNavHost(
-                                navController = navController,
-                                startDestination = startDestination,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-
                         LaunchedEffect(onboardingComplete, permissionsOk) {
                             if (onboardingComplete == true && !permissionsOk) {
-                                navController.navigate(Screen.PermissionAlert.route) {
-                                    launchSingleTop = true
-                                }
+                                navController.navigate(Screen.PermissionAlert.route) { launchSingleTop = true }
                             }
                         }
                     }
@@ -135,6 +98,7 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String) {
     object Onboarding : Screen("onboarding")
     object Home : Screen("home")
+    object Chat : Screen("chat")
     object Contacts : Screen("contacts")
     object IpcDashboard : Screen("ipc_dashboard")
     object McpDashboard : Screen("mcp_dashboard")
@@ -147,45 +111,15 @@ sealed class Screen(val route: String) {
 }
 
 @Composable
-fun AsterNavHost(
-    navController: NavHostController,
-    startDestination: String,
-    modifier: Modifier = Modifier
-) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        modifier = modifier
-    ) {
-        composable(
-            route = Screen.Onboarding.route,
-            enterTransition = { fadeIn(animationSpec = tween(300)) },
-            exitTransition = { fadeOut(animationSpec = tween(300)) }
-        ) {
+fun AsterNavHost(navController: NavHostController, startDestination: String, modifier: Modifier = Modifier) {
+    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
+        composable(Screen.Onboarding.route, enterTransition = { fadeIn(tween(300)) }, exitTransition = { fadeOut(tween(300)) }) {
             OnboardingScreen(
-                onComplete = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Onboarding.route) { inclusive = true }
-                    }
-                },
-                onNavigateToPermissions = {
-                    navController.navigate(Screen.Permissions.route)
-                }
+                onComplete = { navController.navigate(Screen.Home.route) { popUpTo(Screen.Onboarding.route) { inclusive = true } } },
+                onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) }
             )
         }
-
-        composable(
-            route = Screen.Home.route,
-            enterTransition = { fadeIn(animationSpec = tween(300)) },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { -it / 4 }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popEnterTransition = {
-                slideInHorizontally(initialOffsetX = { -it / 4 }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            }
-        ) {
+        composable(Screen.Home.route) {
             HomeScreen(
                 onNavigateToIpc = { navController.navigate(Screen.IpcDashboard.route) },
                 onNavigateToMcp = { navController.navigate(Screen.McpDashboard.route) },
@@ -196,195 +130,41 @@ fun AsterNavHost(
                 onNavigateToMcpDashboard = { navController.navigate(Screen.McpDashboard.route) },
                 onNavigateToRemoteDashboard = { navController.navigate(Screen.RemoteDashboard.route) },
                 onNavigateToLogs = { navController.navigate(Screen.Logs.route) },
-                onNavigateToContacts = { navController.navigate(Screen.Contacts.route) }
+                onNavigateToContacts = { navController.navigate(Screen.Contacts.route) },
+                onNavigateToChat = { navController.navigate(Screen.Chat.route) }
             )
         }
-
-        composable(
-            route = Screen.Contacts.route,
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            }
-        ) {
+        composable(Screen.Chat.route, enterTransition = { slideInHorizontally({ it }, tween(300)) + fadeIn(tween(300)) }, exitTransition = { slideOutHorizontally({ it }, tween(300)) + fadeOut(tween(300)) }) {
+            ChatScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Screen.Contacts.route, enterTransition = { slideInHorizontally({ it }, tween(300)) + fadeIn(tween(300)) }, exitTransition = { slideOutHorizontally({ it }, tween(300)) + fadeOut(tween(300)) }) {
             ContactsScreen(onNavigateBack = { navController.popBackStack() })
         }
-
-        composable(
-            route = Screen.IpcDashboard.route,
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            }
-        ) {
-            IpcDashboardScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) },
-                onNavigateToLogs = { navController.navigate(Screen.Logs.route) }
-            )
+        composable(Screen.IpcDashboard.route) {
+            IpcDashboardScreen(onNavigateBack = { navController.popBackStack() }, onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) }, onNavigateToLogs = { navController.navigate(Screen.Logs.route) })
         }
-
-        composable(
-            route = Screen.McpDashboard.route,
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            }
-        ) {
-            McpDashboardScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) },
-                onNavigateToLogs = { navController.navigate(Screen.Logs.route) }
-            )
+        composable(Screen.McpDashboard.route) {
+            McpDashboardScreen(onNavigateBack = { navController.popBackStack() }, onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) }, onNavigateToLogs = { navController.navigate(Screen.Logs.route) })
         }
-
-        composable(
-            route = Screen.RemoteConnect.route,
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            }
-        ) {
-            RemoteConnectScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) },
-                onNavigateToDashboard = {
-                    navController.navigate(Screen.RemoteDashboard.route) {
-                        popUpTo(Screen.RemoteConnect.route) { inclusive = true }
-                    }
-                }
-            )
+        composable(Screen.RemoteConnect.route) {
+            RemoteConnectScreen(onNavigateBack = { navController.popBackStack() }, onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) }, onNavigateToDashboard = { navController.navigate(Screen.RemoteDashboard.route) { popUpTo(Screen.RemoteConnect.route) { inclusive = true } } })
         }
-
-        composable(
-            route = Screen.RemoteDashboard.route,
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            }
-        ) {
-            RemoteDashboardScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onDisconnected = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.RemoteDashboard.route) { inclusive = true }
-                    }
-                },
-                onNavigateToLogs = { navController.navigate(Screen.Logs.route) }
-            )
+        composable(Screen.RemoteDashboard.route) {
+            RemoteDashboardScreen(onNavigateBack = { navController.popBackStack() }, onDisconnected = { navController.navigate(Screen.Home.route) { popUpTo(Screen.RemoteDashboard.route) { inclusive = true } } }, onNavigateToLogs = { navController.navigate(Screen.Logs.route) })
         }
-
-        composable(
-            route = Screen.Settings.route,
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            }
-        ) {
+        composable(Screen.Settings.route) {
             SettingsScreen(onNavigateBack = { navController.popBackStack() })
         }
-
-        composable(
-            route = Screen.Logs.route,
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            }
-        ) {
+        composable(Screen.Logs.route) {
             LogScreen(onNavigateBack = { navController.popBackStack() })
         }
-
-        composable(
-            route = Screen.PermissionAlert.route,
-            enterTransition = { fadeIn(animationSpec = tween(300)) },
-            exitTransition = { fadeOut(animationSpec = tween(300)) },
-            popExitTransition = { fadeOut(animationSpec = tween(300)) }
-        ) {
+        composable(Screen.PermissionAlert.route, enterTransition = { fadeIn(tween(300)) }, exitTransition = { fadeOut(tween(300)) }) {
             PermissionAlertScreen(
-                onNavigateToPermissions = {
-                    navController.navigate(Screen.Permissions.route) {
-                        popUpTo(Screen.PermissionAlert.route) { inclusive = true }
-                    }
-                },
-                onSkip = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.PermissionAlert.route) { inclusive = true }
-                    }
-                }
+                onNavigateToPermissions = { navController.navigate(Screen.Permissions.route) { popUpTo(Screen.PermissionAlert.route) { inclusive = true } } },
+                onSkip = { navController.navigate(Screen.Home.route) { popUpTo(Screen.PermissionAlert.route) { inclusive = true } } }
             )
         }
-
-        composable(
-            route = Screen.Permissions.route,
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeIn(animationSpec = tween(300))
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            },
-            popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
-                        fadeOut(animationSpec = tween(300))
-            }
-        ) {
+        composable(Screen.Permissions.route) {
             PermissionsScreen(onNavigateBack = { navController.popBackStack() })
         }
     }
