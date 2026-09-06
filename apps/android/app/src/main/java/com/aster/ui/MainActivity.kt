@@ -31,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aster.data.local.SettingsDataStore
+import com.aster.ui.screens.contacts.ContactsScreen
 import com.aster.ui.screens.home.HomeScreen
 import com.aster.ui.screens.ipc.IpcDashboardScreen
 import com.aster.ui.screens.logs.LogScreen
@@ -60,7 +61,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val themeMode by settingsDataStore.themeMode.collectAsStateWithLifecycle(initialValue = "system")
 
-            // Use nullable Boolean: null = still loading from DataStore
             val onboardingComplete by remember {
                 settingsDataStore.onboardingComplete.map<Boolean, Boolean?> { it }
             }.collectAsStateWithLifecycle(initialValue = null)
@@ -76,7 +76,6 @@ class MainActivity : ComponentActivity() {
 
                 when (onboardingComplete) {
                     null -> {
-                        // Splash gate: show bg-only screen while DataStore loads
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -87,8 +86,6 @@ class MainActivity : ComponentActivity() {
                     else -> {
                         val navController = rememberNavController()
                         val context = LocalContext.current
-
-                        // Check permissions on every resume
                         var permissionsOk by remember { mutableStateOf(true) }
 
                         val lifecycleOwner = LocalLifecycleOwner.current
@@ -103,7 +100,6 @@ class MainActivity : ComponentActivity() {
                             onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
                         }
 
-                        // Determine start destination
                         val startDestination = if (onboardingComplete == true) {
                             Screen.Home.route
                         } else {
@@ -122,7 +118,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // If onboarding is complete but permissions are missing, redirect
                         LaunchedEffect(onboardingComplete, permissionsOk) {
                             if (onboardingComplete == true && !permissionsOk) {
                                 navController.navigate(Screen.PermissionAlert.route) {
@@ -140,6 +135,7 @@ class MainActivity : ComponentActivity() {
 sealed class Screen(val route: String) {
     object Onboarding : Screen("onboarding")
     object Home : Screen("home")
+    object Contacts : Screen("contacts")
     object IpcDashboard : Screen("ipc_dashboard")
     object McpDashboard : Screen("mcp_dashboard")
     object RemoteConnect : Screen("remote_connect")
@@ -199,8 +195,27 @@ fun AsterNavHost(
                 onNavigateToIpcDashboard = { navController.navigate(Screen.IpcDashboard.route) },
                 onNavigateToMcpDashboard = { navController.navigate(Screen.McpDashboard.route) },
                 onNavigateToRemoteDashboard = { navController.navigate(Screen.RemoteDashboard.route) },
-                onNavigateToLogs = { navController.navigate(Screen.Logs.route) }
+                onNavigateToLogs = { navController.navigate(Screen.Logs.route) },
+                onNavigateToContacts = { navController.navigate(Screen.Contacts.route) }
             )
+        }
+
+        composable(
+            route = Screen.Contacts.route,
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(300)) +
+                        fadeIn(animationSpec = tween(300))
+            },
+            exitTransition = {
+                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
+                        fadeOut(animationSpec = tween(300))
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(300)) +
+                        fadeOut(animationSpec = tween(300))
+            }
+        ) {
+            ContactsScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         composable(
@@ -314,9 +329,7 @@ fun AsterNavHost(
                         fadeOut(animationSpec = tween(300))
             }
         ) {
-            SettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
+            SettingsScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         composable(
@@ -334,9 +347,7 @@ fun AsterNavHost(
                         fadeOut(animationSpec = tween(300))
             }
         ) {
-            LogScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
+            LogScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         composable(
@@ -374,9 +385,7 @@ fun AsterNavHost(
                         fadeOut(animationSpec = tween(300))
             }
         ) {
-            PermissionsScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
+            PermissionsScreen(onNavigateBack = { navController.popBackStack() })
         }
     }
 }
