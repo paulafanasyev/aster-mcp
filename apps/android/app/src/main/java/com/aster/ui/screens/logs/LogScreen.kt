@@ -30,11 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aster.R
 import com.aster.data.local.db.ToolCallLog
 import com.aster.ui.components.AsterCard
 import com.aster.ui.components.AsterStatCard
@@ -69,14 +71,14 @@ fun LogScreen(
         containerColor = colors.bg,
         topBar = {
             AsterTopBar(
-                title = "Tool Call Logs",
+                title = stringResource(R.string.tool_call_logs),
                 onBack = onNavigateBack,
                 actions = {
                     if (logs.isNotEmpty()) {
                         IconButton(onClick = { viewModel.clearLogs() }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = "Clear logs",
+                                contentDescription = stringResource(R.string.clear_logs),
                                 tint = colors.textSubtle
                             )
                         }
@@ -92,10 +94,8 @@ fun LogScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Stats row
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -103,15 +103,14 @@ fun LogScreen(
                     AsterStatCard(
                         icon = FeatherIcons.Hash,
                         value = totalCount.toString(),
-                        label = "Total Calls",
+                        label = stringResource(R.string.total_calls),
                         accentColor = RemoteColor,
                         modifier = Modifier.weight(1f)
                     )
-
                     AsterStatCard(
                         icon = FeatherIcons.CheckCircle,
                         value = if (totalCount > 0) "${(successCount * 100 / totalCount)}%" else "–",
-                        label = "Success Rate",
+                        label = stringResource(R.string.success_rate),
                         accentColor = SuccessColor,
                         modifier = Modifier.weight(1f)
                     )
@@ -133,12 +132,12 @@ fun LogScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "No tool calls yet",
+                                text = stringResource(R.string.no_tool_calls_yet),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = colors.textMuted
                             )
                             Text(
-                                text = "Tool calls will appear here as they happen",
+                                text = stringResource(R.string.tool_calls_will_appear_here),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = colors.textMuted
                             )
@@ -151,9 +150,7 @@ fun LogScreen(
                 LogEntry(log = log)
             }
 
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
         }
     }
 }
@@ -172,27 +169,23 @@ private fun LogEntry(log: ToolCallLog) {
     val modeLabel = when (log.connectionType) {
         "IPC" -> "IPC"
         "LOCAL_MCP" -> "MCP"
-        "REMOTE_WS" -> "Remote"
+        "REMOTE_WS" -> stringResource(R.string.remote)
         else -> log.connectionType
     }
 
     AsterCard(modifier = Modifier.fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            // Top row: action name + status
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Status dot
                 Box(
                     modifier = Modifier
                         .size(8.dp)
                         .clip(CircleShape)
                         .background(if (log.success) SuccessColor else ErrorColor)
                 )
-
                 Spacer(modifier = Modifier.width(8.dp))
-
                 Text(
                     text = log.action,
                     style = MaterialTheme.typography.titleSmall,
@@ -201,8 +194,6 @@ private fun LogEntry(log: ToolCallLog) {
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.weight(1f)
                 )
-
-                // Mode badge
                 Text(
                     text = modeLabel,
                     style = MaterialTheme.typography.labelSmall,
@@ -215,7 +206,6 @@ private fun LogEntry(log: ToolCallLog) {
                 )
             }
 
-            // Bottom row: timestamp + duration
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -226,9 +216,7 @@ private fun LogEntry(log: ToolCallLog) {
                     color = colors.textMuted,
                     fontSize = 11.sp
                 )
-
                 Spacer(modifier = Modifier.weight(1f))
-
                 if (log.durationMs > 0) {
                     Text(
                         text = "${log.durationMs}ms",
@@ -240,7 +228,6 @@ private fun LogEntry(log: ToolCallLog) {
                 }
             }
 
-            // Error message if present
             if (!log.errorMessage.isNullOrBlank()) {
                 Text(
                     text = log.errorMessage,
@@ -260,7 +247,6 @@ private val dateTimeFormat = SimpleDateFormat("MMM dd, HH:mm:ss", Locale.getDefa
 private fun formatTimestamp(timestamp: Long): String {
     val now = System.currentTimeMillis()
     val diff = now - timestamp
-    // Show time only if today, otherwise show date + time
     return if (diff < 24 * 60 * 60 * 1000) {
         timeFormat.format(Date(timestamp))
     } else {
