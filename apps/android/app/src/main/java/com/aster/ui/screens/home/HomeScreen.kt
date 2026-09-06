@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -53,14 +52,12 @@ import compose.icons.feathericons.Activity
 import compose.icons.feathericons.Star
 import compose.icons.feathericons.Youtube
 
-// Per-mode accent colors
-private val IpcColor = Color(0xFFF59E0B)      // Amber
-private val McpColor = Color(0xFF8B5CF6)       // Violet
-private val RemoteColor = Color(0xFF3B82F6)    // Blue
+private val IpcColor = Color(0xFFF59E0B)
+private val McpColor = Color(0xFF8B5CF6)
+private val RemoteColor = Color(0xFF3B82F6)
 
-// Badge colors
-private val NpmBadgeColor = Color(0xFFCB3837)       // NPM red
-private val OpenClawBadgeColor = Color(0xFF8B5CF6)   // Violet
+private val NpmBadgeColor = Color(0xFFCB3837)
+private val OpenClawBadgeColor = Color(0xFF8B5CF6)
 
 @Composable
 fun HomeScreen(
@@ -87,10 +84,6 @@ fun HomeScreen(
             .background(colors.bg)
             .statusBarsPadding()
     ) {
-        // =====================================================================
-        // TOP BAR (sticky — outside scroll)
-        // =====================================================================
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,13 +94,13 @@ fun HomeScreen(
         ) {
             BrandLockup(
                 modifier = Modifier.weight(1f),
-                tagline = "Android Device Controller"
+                tagline = stringResource(R.string.android_device_controller)
             )
 
             IconButton(onClick = onNavigateToLogs) {
                 Icon(
                     imageVector = FeatherIcons.Activity,
-                    contentDescription = "Logs",
+                    contentDescription = stringResource(R.string.logs),
                     tint = colors.textSubtle
                 )
             }
@@ -115,7 +108,7 @@ fun HomeScreen(
             IconButton(onClick = onNavigateToPermissions) {
                 Icon(
                     imageVector = Icons.Default.Security,
-                    contentDescription = "Permissions",
+                    contentDescription = stringResource(R.string.permissions_title),
                     tint = colors.textSubtle
                 )
             }
@@ -123,15 +116,11 @@ fun HomeScreen(
             IconButton(onClick = onNavigateToSettings) {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings",
+                    contentDescription = stringResource(R.string.settings),
                     tint = colors.textSubtle
                 )
             }
         }
-
-        // =====================================================================
-        // SCROLLABLE CONTENT
-        // =====================================================================
 
         Column(
             modifier = Modifier
@@ -139,10 +128,6 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
         ) {
-            // =================================================================
-            // SERVICE STATUS (shows all active modes)
-            // =================================================================
-
             if (isServiceRunning && activeModes.isNotEmpty()) {
                 AnimatedEntrance(delayMillis = 0, durationMillis = 300) {
                     Column(
@@ -184,7 +169,7 @@ fun HomeScreen(
                                             ModeType.REMOTE_WS -> onNavigateToRemoteDashboard()
                                         }
                                     },
-                                    text = "Dashboard",
+                                    text = stringResource(R.string.dashboard),
                                     variant = AsterButtonVariant.SECONDARY
                                 )
                             }
@@ -195,41 +180,38 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // =================================================================
-            // SECTION: Choose how to connect
-            // =================================================================
-
             Text(
-                text = "Choose how to connect",
+                text = stringResource(R.string.choose_how_to_connect),
                 style = MaterialTheme.typography.titleMedium,
                 color = colors.text,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
-                text = "Select a connection mode to control this device",
+                text = stringResource(R.string.choose_how_to_connect_description),
                 style = MaterialTheme.typography.bodySmall,
                 color = colors.textMuted,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // =================================================================
-            // REMOTE SERVER CARD (Primary — via NPM module)
-            // =================================================================
-
             AnimatedEntrance(delayMillis = 100) {
                 ModeCard(
-                    title = "Remote Server",
-                    tagline = "Via aster-mcp NPM Module",
-                    description = "Install the aster-mcp server via NPM, connect this device via WebSocket, and control it from Claude, Cursor, or any MCP client.",
+                    title = stringResource(R.string.remote_server),
+                    tagline = stringResource(R.string.remote_server_tagline),
+                    description = stringResource(R.string.remote_server_description),
                     icon = Icons.Default.Cloud,
                     accentColor = RemoteColor,
-                    features = listOf("npm install", "40+ tools", "Webhooks", "Tailscale ready"),
+                    features = listOf(
+                        stringResource(R.string.feature_npm_install),
+                        stringResource(R.string.feature_40_tools),
+                        stringResource(R.string.feature_webhooks),
+                        stringResource(R.string.feature_tailscale_ready)
+                    ),
                     badges = listOf(
                         BadgeItem("NPM", NpmBadgeColor),
                         BadgeItem("OpenClaw", OpenClawBadgeColor)
                     ),
-                    complexity = "Recommended",
+                    complexity = stringResource(R.string.recommended),
                     isSelected = lastUsedMode == ModeType.REMOTE_WS.name,
                     isActive = activeModes.contains(ModeType.REMOTE_WS),
                     onClick = onNavigateToRemote,
@@ -239,19 +221,20 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // =================================================================
-            // IPC MODE CARD
-            // =================================================================
-
             AnimatedEntrance(delayMillis = 250) {
                 ModeCard(
-                    title = "IPC Mode",
-                    tagline = "Direct Device Bridge",
-                    description = "Connect aster-one to this device directly via native Android IPC. No network needed — fastest and most reliable.",
+                    title = stringResource(R.string.ipc_mode),
+                    tagline = stringResource(R.string.ipc_mode_tagline),
+                    description = stringResource(R.string.ipc_mode_home_description),
                     icon = Icons.Default.PhoneAndroid,
                     accentColor = IpcColor,
-                    features = listOf("Zero latency", "No network", "Token auth", "40+ tools"),
-                    complexity = "Beginner",
+                    features = listOf(
+                        stringResource(R.string.feature_zero_latency),
+                        stringResource(R.string.feature_no_network),
+                        stringResource(R.string.feature_token_auth),
+                        stringResource(R.string.feature_40_tools)
+                    ),
+                    complexity = stringResource(R.string.beginner),
                     isSelected = lastUsedMode == ModeType.IPC.name,
                     isActive = activeModes.contains(ModeType.IPC),
                     onClick = onNavigateToIpc,
@@ -261,24 +244,20 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // =================================================================
-            // LOCAL MCP CARD
-            // =================================================================
-
             AnimatedEntrance(delayMillis = 400) {
                 ModeCard(
-                    title = "Local MCP Server",
-                    tagline = "On-Device MCP Server",
-                    description = "Run an MCP server directly on this device. Connect from Claude Desktop, Cursor, or any MCP-compatible client over your network.",
+                    title = stringResource(R.string.local_mcp_server),
+                    tagline = stringResource(R.string.local_mcp_server_tagline),
+                    description = stringResource(R.string.local_mcp_server_home_description),
                     icon = Icons.Default.Dns,
                     accentColor = McpColor,
                     features = listOf(
-                        "Claude Desktop",
-                        "HTTP transport",
-                        "LAN access",
-                        "Tailscale"
+                        stringResource(R.string.feature_claude_desktop),
+                        stringResource(R.string.feature_http_transport),
+                        stringResource(R.string.feature_lan_access),
+                        stringResource(R.string.feature_tailscale)
                     ),
-                    complexity = "Intermediate",
+                    complexity = stringResource(R.string.intermediate),
                     isSelected = lastUsedMode == ModeType.LOCAL_MCP.name,
                     isActive = activeModes.contains(ModeType.LOCAL_MCP),
                     onClick = onNavigateToMcp,
@@ -286,13 +265,10 @@ fun HomeScreen(
                 )
             }
 
-            // =================================================================
-            // STAR THE REPO (dismissible invitation)
-            // =================================================================
-
             val uriHandler = LocalUriHandler.current
             val starAmber = Color(0xFFF59E0B)
             val repoUrl = stringResource(R.string.star_repo_url)
+            val youtubeUrl = stringResource(R.string.youtube_url)
 
             if (!starPromptDismissed) {
                 Spacer(modifier = Modifier.height(24.dp))
@@ -301,7 +277,6 @@ fun HomeScreen(
                     StarRepoCard(
                         onStar = {
                             uriHandler.openUri(repoUrl)
-                            // Opening the repo counts as acting on it.
                             viewModel.dismissStarPrompt()
                         },
                         onDismiss = viewModel::dismissStarPrompt
@@ -310,10 +285,6 @@ fun HomeScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-
-            // =================================================================
-            // YOUTUBE SUBSCRIBE FOOTER
-            // =================================================================
 
             val ytRed = Color(0xFFFF0000)
 
@@ -334,7 +305,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = "Subscribe to ",
+                    text = stringResource(R.string.subscribe_to),
                     style = MaterialTheme.typography.labelMedium,
                     color = colors.textMuted
                 )
@@ -345,21 +316,15 @@ fun HomeScreen(
                     color = ytRed,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
-                        .clickable {
-                            uriHandler.openUri("https://youtube.com/@GamesPatch")
-                        }
+                        .clickable { uriHandler.openUri(youtubeUrl) }
                 )
 
                 Text(
-                    text = " on YouTube",
+                    text = stringResource(R.string.on_youtube),
                     style = MaterialTheme.typography.labelMedium,
                     color = colors.textMuted
                 )
             }
-
-            // =================================================================
-            // STAR THE REPO
-            // =================================================================
 
             if (starPromptDismissed) {
                 Row(
@@ -396,7 +361,7 @@ fun HomeScreen(
 }
 
 private fun ModeType.toDisplayName(): String = when (this) {
-    ModeType.IPC -> "IPC Mode"
-    ModeType.LOCAL_MCP -> "Local MCP"
-    ModeType.REMOTE_WS -> "Remote Server"
+    ModeType.IPC -> "IPC"
+    ModeType.LOCAL_MCP -> "MCP"
+    ModeType.REMOTE_WS -> "WebSocket"
 }

@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -63,12 +64,10 @@ fun OnboardingScreen(
     val currentStep by viewModel.currentStep.collectAsState()
     val context = LocalContext.current
 
-    // Track permission state
     var allPermissionsGranted by remember { mutableStateOf(false) }
     var grantedCount by remember { mutableStateOf(0) }
     var totalCount by remember { mutableStateOf(0) }
 
-    // Check permissions
     fun refreshPermissions() {
         val result = PermissionUtils.checkAllPermissions(context)
         allPermissionsGranted = result.allGranted
@@ -76,12 +75,10 @@ fun OnboardingScreen(
         totalCount = result.totalCount
     }
 
-    // Initial check
     LaunchedEffect(Unit) {
         refreshPermissions()
     }
 
-    // Refresh when returning from system settings
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -98,14 +95,12 @@ fun OnboardingScreen(
         pageCount = { OnboardingViewModel.TOTAL_STEPS }
     )
 
-    // Sync pager state with ViewModel
     LaunchedEffect(currentStep) {
         if (pagerState.currentPage != currentStep) {
             pagerState.animateScrollToPage(currentStep)
         }
     }
 
-    // Sync ViewModel with pager swipe
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             if (page != currentStep) {
@@ -123,7 +118,6 @@ fun OnboardingScreen(
             .background(colors.bg)
             .statusBarsPadding()
     ) {
-        // Pager content
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
@@ -141,7 +135,6 @@ fun OnboardingScreen(
             }
         }
 
-        // Bottom section: step dots + navigation button
         BottomNavigation(
             currentStep = pagerState.currentPage,
             totalSteps = OnboardingViewModel.TOTAL_STEPS,
@@ -163,10 +156,6 @@ fun OnboardingScreen(
     }
 }
 
-// =============================================================================
-// STEP 0: ABOUT ASTER MCP
-// =============================================================================
-
 @Composable
 private fun AboutStep() {
     val colors = AsterTheme.colors
@@ -182,7 +171,7 @@ private fun AboutStep() {
         AnimatedEntrance(delayMillis = 100) {
             Image(
                 painter = painterResource(id = R.mipmap.ic_launcher_adaptive_fore),
-                contentDescription = "Aster",
+                contentDescription = stringResource(R.string.app_name),
                 modifier = Modifier
                     .size(96.dp)
                     .clip(RoundedCornerShape(20.dp))
@@ -193,7 +182,7 @@ private fun AboutStep() {
 
         AnimatedEntrance(delayMillis = 300) {
             Text(
-                text = "Aster MCP",
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displayMedium,
                 color = colors.text,
                 textAlign = TextAlign.Center
@@ -204,7 +193,7 @@ private fun AboutStep() {
 
         AnimatedEntrance(delayMillis = 500) {
             Text(
-                text = "Android Device Controller",
+                text = stringResource(R.string.android_device_controller),
                 style = MaterialTheme.typography.titleLarge,
                 color = colors.primary,
                 textAlign = TextAlign.Center,
@@ -216,7 +205,7 @@ private fun AboutStep() {
 
         AnimatedEntrance(delayMillis = 650) {
             Text(
-                text = "Control your Android device through IPC, local MCP server, or remote WebSocket connections. Open-source and privacy-first.",
+                text = stringResource(R.string.onboarding_description),
                 style = MaterialTheme.typography.bodyLarge,
                 color = colors.textSubtle,
                 textAlign = TextAlign.Center
@@ -229,16 +218,16 @@ private fun AboutStep() {
             AsterCard(modifier = Modifier.fillMaxWidth()) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     FeatureItem(
-                        title = "IPC Mode",
-                        description = "Direct connection to aster-one via Android Binder"
+                        title = stringResource(R.string.ipc_mode),
+                        description = stringResource(R.string.ipc_mode_description)
                     )
                     FeatureItem(
-                        title = "Local MCP Server",
-                        description = "Run an MCP server directly on-device"
+                        title = stringResource(R.string.local_mcp_server),
+                        description = stringResource(R.string.local_mcp_server_description)
                     )
                     FeatureItem(
-                        title = "Remote WebSocket",
-                        description = "Connect to a remote server via WebSocket"
+                        title = stringResource(R.string.remote_websocket),
+                        description = stringResource(R.string.remote_websocket_description)
                     )
                 }
             }
@@ -268,10 +257,6 @@ private fun FeatureItem(
     }
 }
 
-// =============================================================================
-// STEP 1: PERMISSIONS
-// =============================================================================
-
 @Composable
 private fun PermissionsStep(
     onOpenPermissions: () -> Unit,
@@ -291,7 +276,7 @@ private fun PermissionsStep(
     ) {
         AnimatedEntrance(delayMillis = 100) {
             Text(
-                text = "Required Permissions",
+                text = stringResource(R.string.required_permissions),
                 style = MaterialTheme.typography.headlineMedium,
                 color = colors.text,
                 textAlign = TextAlign.Center
@@ -302,7 +287,7 @@ private fun PermissionsStep(
 
         AnimatedEntrance(delayMillis = 250) {
             Text(
-                text = "Aster needs permissions to control your device. These are used locally and never leave your device.",
+                text = stringResource(R.string.permissions_description),
                 style = MaterialTheme.typography.bodyMedium,
                 color = colors.textSubtle,
                 textAlign = TextAlign.Center
@@ -311,7 +296,6 @@ private fun PermissionsStep(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Permission status summary
         AnimatedEntrance(delayMillis = 400) {
             AsterCard(modifier = Modifier.fillMaxWidth()) {
                 Column(
@@ -325,13 +309,13 @@ private fun PermissionsStep(
                     ) {
                         Column {
                             Text(
-                                text = "$grantedCount of $totalCount",
+                                text = stringResource(R.string.permissions_count, grantedCount, totalCount),
                                 style = MaterialTheme.typography.headlineMedium,
                                 color = if (allGranted) colors.success else colors.warning,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = if (allGranted) "All permissions granted" else "Permissions granted",
+                                text = if (allGranted) stringResource(R.string.all_permissions_granted) else stringResource(R.string.permissions_granted),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = colors.textSubtle
                             )
@@ -352,7 +336,7 @@ private fun PermissionsStep(
                         )
 
                         Text(
-                            text = "Tap below to open permissions settings and grant all required access.",
+                            text = stringResource(R.string.permissions_open_hint),
                             style = MaterialTheme.typography.bodySmall,
                             color = colors.textMuted,
                             textAlign = TextAlign.Center
@@ -373,13 +357,13 @@ private fun PermissionsStep(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "You're all set!",
+                            text = stringResource(R.string.you_are_all_set),
                             style = MaterialTheme.typography.titleMedium,
                             color = colors.success,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "All permissions have been granted. Tap \"Get Started\" to continue.",
+                            text = stringResource(R.string.permissions_complete_hint),
                             style = MaterialTheme.typography.bodySmall,
                             color = colors.textSubtle,
                             textAlign = TextAlign.Center
@@ -389,7 +373,7 @@ private fun PermissionsStep(
             } else {
                 AsterButton(
                     onClick = onOpenPermissions,
-                    text = "Grant Permissions",
+                    text = stringResource(R.string.grant_permission),
                     variant = AsterButtonVariant.PRIMARY,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -397,10 +381,6 @@ private fun PermissionsStep(
         }
     }
 }
-
-// =============================================================================
-// BOTTOM NAVIGATION: DOTS + BUTTON
-// =============================================================================
 
 @Composable
 private fun BottomNavigation(
@@ -421,7 +401,6 @@ private fun BottomNavigation(
             .padding(bottom = 32.dp, top = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Step indicator dots
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -443,7 +422,6 @@ private fun BottomNavigation(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Navigation buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -451,7 +429,7 @@ private fun BottomNavigation(
             if (currentStep > 0) {
                 AsterButton(
                     onClick = onBack,
-                    text = "Back",
+                    text = stringResource(R.string.back),
                     variant = AsterButtonVariant.SECONDARY,
                     modifier = Modifier.weight(1f)
                 )
@@ -459,7 +437,7 @@ private fun BottomNavigation(
 
             AsterButton(
                 onClick = onNext,
-                text = if (isLastStep) "Get Started" else "Next",
+                text = if (isLastStep) stringResource(R.string.get_started) else stringResource(R.string.next),
                 variant = AsterButtonVariant.PRIMARY,
                 enabled = canProceed,
                 modifier = Modifier.weight(1f)
