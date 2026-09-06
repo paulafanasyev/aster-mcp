@@ -34,7 +34,6 @@ class SettingsDataStore @Inject constructor(
         val MCP_PORT = intPreferencesKey("mcp_port")
         val AUTO_START_MODE = stringPreferencesKey("auto_start_mode")
         val STAR_PROMPT_DISMISSED = booleanPreferencesKey("star_prompt_dismissed")
-        val OWNERSHIP_BOUNDARY_V1 = booleanPreferencesKey("ownership_boundary_v1")
     }
 
     val serverConfig: Flow<ServerConfig> = dataStore.data.map { prefs ->
@@ -55,25 +54,6 @@ class SettingsDataStore @Inject constructor(
     val ipcToken: Flow<String?> = dataStore.data.map { prefs -> prefs[Keys.IPC_TOKEN] }
     val mcpPort: Flow<Int> = dataStore.data.map { prefs -> prefs[Keys.MCP_PORT] ?: 8080 }
     val autoStartMode: Flow<String?> = dataStore.data.map { prefs -> prefs[Keys.AUTO_START_MODE] }
-
-    /**
-     * One-time ownership boundary for the Светлана build.
-     * Removes persisted remote endpoints/tokens from any predecessor installation
-     * before boot auto-start or remote reconnect can reuse them.
-     */
-    suspend fun enforceOwnershipBoundary() {
-        dataStore.edit { prefs ->
-            if (prefs[Keys.OWNERSHIP_BOUNDARY_V1] != true) {
-                prefs.remove(Keys.SERVER_HOST)
-                prefs.remove(Keys.SERVER_PORT)
-                prefs.remove(Keys.SERVER_URL)
-                prefs[Keys.AUTO_CONNECT] = false
-                prefs.remove(Keys.IPC_TOKEN)
-                prefs.remove(Keys.DEVICE_ID)
-                prefs[Keys.OWNERSHIP_BOUNDARY_V1] = true
-            }
-        }
-    }
 
     suspend fun saveServerUrl(url: String) { dataStore.edit { it[Keys.SERVER_URL] = url } }
     suspend fun saveServerConfig(host: String, port: Int, autoConnect: Boolean = false) = dataStore.edit {
