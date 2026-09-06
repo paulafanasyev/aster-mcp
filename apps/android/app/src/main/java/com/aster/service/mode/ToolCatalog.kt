@@ -14,263 +14,263 @@ object ToolCatalog {
 
     /** Ordered list of categories for display (controls section ordering). */
     val categoryOrder = listOf(
-        "Screen Control",
-        "Device",
-        "Files",
-        "Camera",
-        "Communication",
-        "Notifications",
-        "Media",
-        "Storage",
-        "Apps",
-        "System",
-        "Overlays",
-        "Alarms"
+        "Управление экраном",
+        "Устройство",
+        "Файлы",
+        "Камера",
+        "Связь",
+        "Уведомления",
+        "Мультимедиа",
+        "Хранилище",
+        "Приложения",
+        "Система",
+        "Наложения",
+        "Будильники"
     )
 
     private val catalog = mapOf(
         // -- Screen Control --
         "observe" to ToolEntry(
-            "Observe Screen",
-            "Indexed actionable-element view of the current screen with stable refs; " +
-                "falls back to on-device OCR when the accessibility tree is sparse",
-            "Screen Control"
+            "Наблюдать за экраном",
+            "Индексированное представление элементов текущего экрана со стабильными ссылками; " +
+                "при разреженном дереве специальных возможностей используется OCR на устройстве",
+            "Управление экраном"
         ),
         "get_screen_hierarchy" to ToolEntry(
-            "Screen Hierarchy",
-            "Read the UI accessibility tree",
-            "Screen Control"
+            "Иерархия экрана",
+            "Читать дерево специальных возможностей интерфейса",
+            "Управление экраном"
         ),
         "take_screenshot" to ToolEntry(
-            "Screenshot",
-            "Capture screen as JPEG; optional annotate adds numbered boxes (Set-of-Marks)",
-            "Screen Control"
+            "Снимок экрана",
+            "Сохранить экран как JPEG; при необходимости добавить нумерованные области",
+            "Управление экраном"
         ),
         "input_gesture" to ToolEntry(
-            "Gesture",
-            "Tap, swipe, or long-press on screen",
-            "Screen Control"
+            "Жест",
+            "Нажатие, свайп или долгое нажатие на экране",
+            "Управление экраном"
         ),
         "input_text" to ToolEntry(
-            "Type Text",
-            "Type text into focused input field",
-            "Screen Control"
+            "Ввести текст",
+            "Ввести текст в активное поле",
+            "Управление экраном"
         ),
         "find_element" to ToolEntry(
-            "Find Element",
-            "Search for UI elements by text",
-            "Screen Control"
+            "Найти элемент",
+            "Искать элементы интерфейса по тексту",
+            "Управление экраном"
         ),
         "click_by_text" to ToolEntry(
-            "Click by Text",
-            "Find and tap element by visible text",
-            "Screen Control"
+            "Нажать по тексту",
+            "Найти и нажать элемент по видимому тексту",
+            "Управление экраном"
         ),
         "click_by_view_id" to ToolEntry(
-            "Click by ID",
-            "Find and tap element by view ID",
-            "Screen Control"
+            "Нажать по ID",
+            "Найти и нажать элемент по ID представления",
+            "Управление экраном"
         ),
-        "scroll" to ToolEntry("Scroll", "Scroll in any direction", "Screen Control"),
-        "tap" to ToolEntry("Tap", "Tap an element by ref or coordinates", "Screen Control"),
+        "scroll" to ToolEntry("Прокрутка", "Прокрутка в любом направлении", "Управление экраном"),
+        "tap" to ToolEntry("Нажатие", "Нажать элемент по ссылке или координатам", "Управление экраном"),
         "long_press" to ToolEntry(
-            "Long Press",
-            "Long-press an element by ref or coordinates",
-            "Screen Control"
+            "Долгое нажатие",
+            "Долго нажать элемент по ссылке или координатам",
+            "Управление экраном"
         ),
         "set_text" to ToolEntry(
-            "Set Text",
-            "Type text into a specific field by ref (replace or append)",
-            "Screen Control"
+            "Установить текст",
+            "Ввести текст в поле по ссылке (заменить или добавить)",
+            "Управление экраном"
         ),
         "set_toggle" to ToolEntry(
-            "Set Toggle",
-            "Set a switch or checkbox on/off by ref",
-            "Screen Control"
+            "Установить переключатель",
+            "Включить или выключить переключатель или флажок по ссылке",
+            "Управление экраном"
         ),
         "perform" to ToolEntry(
-            "Perform Action",
-            "Invoke an accessibility action on an element by ref",
-            "Screen Control"
+            "Выполнить действие",
+            "Выполнить действие специальных возможностей над элементом по ссылке",
+            "Управление экраном"
         ),
         "press_key" to ToolEntry(
-            "Press Key",
-            "Press a hardware/IME key (Enter, Back, Tab, arrows…)",
-            "Screen Control"
+            "Нажать клавишу",
+            "Нажать аппаратную или IME-клавишу (Enter, Назад, Tab, стрелки…)",
+            "Управление экраном"
         ),
         "wait_for_idle" to ToolEntry(
-            "Wait for Idle",
-            "Wait until the screen stops changing",
-            "Screen Control"
+            "Ждать бездействия",
+            "Ждать, пока экран перестанет изменяться",
+            "Управление экраном"
         ),
         "wait_for" to ToolEntry(
-            "Wait for Element",
-            "Wait until an element appears or disappears",
-            "Screen Control"
+            "Ждать элемент",
+            "Ждать появления или исчезновения элемента",
+            "Управление экраном"
         ),
         "global_action" to ToolEntry(
-            "System Action",
-            "Home, back, recents, and other system actions",
-            "Screen Control"
+            "Системное действие",
+            "Главный экран, назад, последние приложения и другие системные действия",
+            "Управление экраном"
         ),
 
         // -- Device --
         "get_device_info" to ToolEntry(
-            "Device Info",
-            "Model, OS, RAM, storage, and hardware details",
-            "Device"
+            "Сведения об устройстве",
+            "Модель, ОС, ОЗУ, хранилище и сведения об оборудовании",
+            "Устройство"
         ),
         "get_battery" to ToolEntry(
-            "Battery",
-            "Battery level, charging status, and health",
-            "Device"
+            "Батарея",
+            "Уровень батареи, зарядка и состояние аккумулятора",
+            "Устройство"
         ),
         "get_location" to ToolEntry(
-            "Location",
-            "Current GPS coordinates and location data",
-            "Device"
+            "Местоположение",
+            "Текущие координаты GPS и данные о местоположении",
+            "Устройство"
         ),
 
         // -- Files --
-        "list_files" to ToolEntry("List Files", "Browse files and folders with metadata", "Files"),
-        "read_file" to ToolEntry("Read File", "Read text or binary file contents", "Files"),
-        "write_file" to ToolEntry("Write File", "Create or overwrite files on device", "Files"),
-        "delete_file" to ToolEntry("Delete File", "Delete files or directories", "Files"),
-        "files.read" to ToolEntry("Read Host File", "Read a file from an owner-approved folder (App Builder host-dir)", "Files"),
-        "files.list" to ToolEntry("List Host Folder", "List a folder the owner approved for an app (App Builder host-dir)", "Files"),
+        "list_files" to ToolEntry("Список файлов", "Просматривать файлы и папки с метаданными", "Файлы"),
+        "read_file" to ToolEntry("Прочитать файл", "Читать текстовое или двоичное содержимое файла", "Файлы"),
+        "write_file" to ToolEntry("Записать файл", "Создавать или перезаписывать файлы на устройстве", "Файлы"),
+        "delete_file" to ToolEntry("Удалить файл", "Удалять файлы и каталоги", "Файлы"),
+        "files.read" to ToolEntry("Прочитать файл хоста", "Читать файл из папки, разрешённой разработчиком", "Файлы"),
+        "files.list" to ToolEntry("Список папки хоста", "Просматривать папку, разрешённую разработчиком для приложения", "Файлы"),
 
         // -- Camera --
         "take_photo" to ToolEntry(
-            "Take Photo",
-            "Capture photo from front or back camera",
-            "Camera"
+            "Сделать фото",
+            "Сделать фото передней или задней камерой",
+            "Камера"
         ),
         "record_video" to ToolEntry(
-            "Record Video",
-            "Record short video clip from camera",
-            "Camera"
+            "Записать видео",
+            "Записать короткое видео камерой",
+            "Камера"
         ),
 
         // -- Communication --
-        "send_sms" to ToolEntry("Send SMS", "Send text messages", "Communication"),
-        "read_sms" to ToolEntry("Read SMS", "Read inbox, sent, or all messages", "Communication"),
-        "count_sms" to ToolEntry("Count SMS", "Count messages in a date window", "Communication"),
-        "make_call" to ToolEntry("Phone Call", "Initiate a phone call", "Communication"),
+        "send_sms" to ToolEntry("Отправить SMS", "Отправлять текстовые сообщения", "Связь"),
+        "read_sms" to ToolEntry("Прочитать SMS", "Читать входящие, отправленные или все сообщения", "Связь"),
+        "count_sms" to ToolEntry("Посчитать SMS", "Считать сообщения за выбранный период", "Связь"),
+        "make_call" to ToolEntry("Телефонный звонок", "Начать телефонный звонок", "Связь"),
         "make_call_with_voice" to ToolEntry(
-            "Call & Speak",
-            "Call and speak text when answered",
-            "Communication"
+            "Позвонить и сказать",
+            "Позвонить и произнести текст после ответа",
+            "Связь"
         ),
         "search_contacts" to ToolEntry(
-            "Search Contacts",
-            "Find contacts by name or phone number",
-            "Communication"
+            "Найти контакты",
+            "Найти контакты по имени или номеру телефона",
+            "Связь"
         ),
 
         // -- Notifications --
         "read_notifications" to ToolEntry(
-            "Read",
-            "Get active and recent notifications",
-            "Notifications"
+            "Прочитать",
+            "Получить активные и недавние уведомления",
+            "Уведомления"
         ),
-        "post_notification" to ToolEntry("Post", "Show a local notification", "Notifications"),
+        "post_notification" to ToolEntry("Показать", "Показать локальное уведомление", "Уведомления"),
         "dismiss_notification" to ToolEntry(
-            "Dismiss",
-            "Dismiss a specific notification",
-            "Notifications"
+            "Закрыть",
+            "Скрыть выбранное уведомление",
+            "Уведомления"
         ),
         "dismiss_all_notifications" to ToolEntry(
-            "Dismiss All",
-            "Clear all active notifications",
-            "Notifications"
+            "Закрыть все",
+            "Очистить все активные уведомления",
+            "Уведомления"
         ),
 
         // -- Media --
-        "play_audio" to ToolEntry("Play Audio", "Play audio from URL, file, or data", "Media"),
-        "stop_audio" to ToolEntry("Stop Audio", "Stop current audio playback", "Media"),
-        "speak_tts" to ToolEntry("Text-to-Speech", "Speak text aloud using TTS engine", "Media"),
-        "vibrate" to ToolEntry("Vibrate", "Vibrate with custom patterns", "Media"),
+        "play_audio" to ToolEntry("Воспроизвести аудио", "Воспроизвести аудио из URL, файла или данных", "Мультимедиа"),
+        "stop_audio" to ToolEntry("Остановить аудио", "Остановить текущее воспроизведение", "Мультимедиа"),
+        "speak_tts" to ToolEntry("Синтез речи", "Произнести текст вслух через движок TTS", "Мультимедиа"),
+        "vibrate" to ToolEntry("Вибрация", "Вибрировать по заданному шаблону", "Мультимедиа"),
         "get_now_playing" to ToolEntry(
-            "Now Playing",
-            "Read the currently-playing track (title, artist, source app) from the OS " +
-                "media sessions; reuses notification access, no extra permission",
-            "Media"
+            "Сейчас играет",
+            "Получить текущий трек (название, исполнитель, приложение-источник) из ОС " +
+                "медиасессий; используется доступ к уведомлениям без дополнительного разрешения",
+            "Мультимедиа"
         ),
 
         // -- Storage --
         "analyze_storage" to ToolEntry(
-            "Analyze",
-            "Disk usage breakdown by directory and type",
-            "Storage"
+            "Анализировать",
+            "Разбивка использования диска по каталогам и типам",
+            "Хранилище"
         ),
         "find_large_files" to ToolEntry(
-            "Large Files",
-            "Find files above a size threshold",
-            "Storage"
+            "Большие файлы",
+            "Найти файлы больше заданного размера",
+            "Хранилище"
         ),
         "index_media_metadata" to ToolEntry(
-            "Index Media",
-            "Index photos/videos with EXIF and GPS",
-            "Storage"
+            "Индексировать медиа",
+            "Индексировать фото и видео с EXIF и GPS",
+            "Хранилище"
         ),
         "search_media" to ToolEntry(
-            "Search Media",
-            "Search by date, location, type, or camera",
-            "Storage"
+            "Поиск медиа",
+            "Искать по дате, местоположению, типу или камере",
+            "Хранилище"
         ),
 
         // -- Apps --
-        "list_packages" to ToolEntry("Installed Apps", "List all apps with version info", "Apps"),
-        "launch_intent" to ToolEntry("Launch App", "Launch apps or custom Android intents", "Apps"),
+        "list_packages" to ToolEntry("Установленные приложения", "Показать все приложения и версии", "Приложения"),
+        "launch_intent" to ToolEntry("Запустить приложение", "Запускать приложения или пользовательские Android Intent", "Приложения"),
 
         // -- System --
         "screen_set_policy" to ToolEntry(
-            "Sync App Policy",
-            "Receive the owner's per-app screen-control allow/deny list from OpenAlly",
-            "System"
+            "Синхронизировать политику приложения",
+            "Получать список разрешений и запретов управления экраном по приложениям",
+            "Система"
         ),
-        "execute_shell" to ToolEntry("Shell Command", "Run commands in app sandbox", "System"),
-        "get_clipboard" to ToolEntry("Get Clipboard", "Read current clipboard content", "System"),
-        "set_clipboard" to ToolEntry("Set Clipboard", "Copy text to clipboard", "System"),
-        "get_volume" to ToolEntry("Get Volume", "Volume levels for all audio streams", "System"),
-        "set_volume" to ToolEntry("Set Volume", "Adjust volume or mute audio streams", "System"),
-        "show_toast" to ToolEntry("Toast Message", "Show a brief on-screen message", "System"),
+        "execute_shell" to ToolEntry("Команда оболочки", "Выполнять команды в песочнице приложения", "Система"),
+        "get_clipboard" to ToolEntry("Получить буфер обмена", "Читать текущее содержимое буфера обмена", "Система"),
+        "set_clipboard" to ToolEntry("Установить буфер обмена", "Копировать текст в буфер обмена", "Система"),
+        "get_volume" to ToolEntry("Получить громкость", "Уровни громкости всех аудиопотоков", "Система"),
+        "set_volume" to ToolEntry("Установить громкость", "Изменять громкость или отключать звук", "Система"),
+        "show_toast" to ToolEntry("Всплывающее сообщение", "Показать короткое сообщение на экране", "Система"),
 
         // -- Overlays --
         "show_overlay" to ToolEntry(
-            "Show Overlay",
-            "Display floating HTML overlay on screen",
-            "Overlays"
+            "Показать наложение",
+            "Показать плавающее HTML-окно поверх экрана",
+            "Наложения"
         ),
-        "hide_overlay" to ToolEntry("Hide Overlay", "Hide a specific floating overlay", "Overlays"),
-        "hide_all_overlays" to ToolEntry("Hide All", "Remove all active overlays", "Overlays"),
-        "list_overlays" to ToolEntry("List Overlays", "List active overlay IDs", "Overlays"),
+        "hide_overlay" to ToolEntry("Скрыть наложение", "Скрыть выбранное плавающее окно", "Наложения"),
+        "hide_all_overlays" to ToolEntry("Скрыть все", "Убрать все активные наложения", "Наложения"),
+        "list_overlays" to ToolEntry("Список наложений", "Показать ID активных наложений", "Наложения"),
         "companion_overlay_status" to ToolEntry(
-            "Companion Face Status",
-            "Whether Aster can draw over other apps, and whether OpenAlly's companion face is up",
-            "Overlays"
+            "Состояние лица помощника",
+            "Можно ли отображать лицо поверх других приложений и запущено ли лицо помощника",
+            "Наложения"
         ),
         "companion_overlay_show" to ToolEntry(
-            "Show Companion Face",
-            "Draw OpenAlly's ambient companion face beside the camera cutout",
-            "Overlays"
+            "Показать лицо помощника",
+            "Показать лицо помощника рядом с вырезом камеры",
+            "Наложения"
         ),
         "companion_overlay_hide" to ToolEntry(
-            "Hide Companion Face",
-            "Take down OpenAlly's ambient companion face",
-            "Overlays"
+            "Скрыть лицо помощника",
+            "Скрыть лицо помощника",
+            "Наложения"
         ),
         "companion_overlay_recompute" to ToolEntry(
-            "Re-place Companion Face",
-            "Recompute the companion face's position around the camera cutout",
-            "Overlays"
+            "Переместить лицо помощника",
+            "Заново рассчитать положение лица помощника вокруг выреза камеры",
+            "Наложения"
         ),
 
         // -- Alarms --
-        "get_alarms" to ToolEntry("Get Alarms", "View scheduled alarms", "Alarms"),
-        "set_alarm" to ToolEntry("Set Alarm", "Create a new alarm", "Alarms"),
-        "dismiss_alarm" to ToolEntry("Dismiss Alarm", "Stop a ringing alarm", "Alarms"),
-        "delete_alarm" to ToolEntry("Delete Alarm", "Remove a saved alarm", "Alarms"),
+        "get_alarms" to ToolEntry("Получить будильники", "Просмотреть запланированные будильники", "Будильники"),
+        "set_alarm" to ToolEntry("Установить будильник", "Создать новый будильник", "Будильники"),
+        "dismiss_alarm" to ToolEntry("Остановить будильник", "Остановить звонящий будильник", "Будильники"),
+        "delete_alarm" to ToolEntry("Удалить будильник", "Удалить сохранённый будильник", "Будильники"),
     )
 
     /**
@@ -293,7 +293,7 @@ object ToolCatalog {
                 name = action,
                 displayName = displayName,
                 description = action,
-                category = "Other"
+                category = "Другое"
             )
         }
     }

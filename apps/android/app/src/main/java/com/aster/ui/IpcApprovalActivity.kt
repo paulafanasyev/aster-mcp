@@ -187,7 +187,7 @@ class IpcApprovalActivity : ComponentActivity() {
                             Spacer(Modifier.height(16.dp))
 
                             Text(
-                                text = "wants to connect via IPC",
+                                text = "запрашивает подключение через IPC",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -195,7 +195,7 @@ class IpcApprovalActivity : ComponentActivity() {
                             Spacer(Modifier.height(8.dp))
 
                             Text(
-                                text = "This will allow the app to use Aster Tools on this device, including device control, file access, and other capabilities.",
+                                text = "Это позволит приложению использовать инструменты Светланы на этом устройстве, включая управление устройством, доступ к файлам и другие возможности.",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -219,7 +219,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                 )
                             ) {
                                 Text(
-                                    text = "Approve",
+                                    text = "Разрешить",
                                     modifier = Modifier.padding(vertical = 4.dp)
                                 )
                             }
@@ -232,7 +232,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text(
-                                    text = "Deny",
+                                    text = "Отклонить",
                                     modifier = Modifier.padding(vertical = 4.dp)
                                 )
                             }
@@ -271,7 +271,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "Permissions Required",
+                                        text = "Требуются разрешения",
                                         style = MaterialTheme.typography.titleLarge,
                                         color = colors.text
                                     )
@@ -295,7 +295,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                 Spacer(Modifier.height(4.dp))
 
                                 Text(
-                                    text = "Aster Tools needs these permissions to provide full device control capabilities.",
+                                    text = "Для полного управления устройством инструментам Светланы нужны эти разрешения.",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = colors.textSubtle
                                 )
@@ -311,7 +311,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                 ) {
                                     // Runtime permissions
                                     Text(
-                                        text = "RUNTIME",
+                                        text = "ОСНОВНЫЕ",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = colors.textMuted,
                                         fontWeight = FontWeight.SemiBold
@@ -321,8 +321,8 @@ class IpcApprovalActivity : ComponentActivity() {
 
                                     PermissionRow(
                                         icon = FeatherIcons.Bell,
-                                        name = "Notifications",
-                                        description = "Post and manage notifications",
+                                        name = "Уведомления",
+                                        description = "Показывать и управлять уведомлениями",
                                         isGranted = currentResult?.permissions?.get(PermissionType.NOTIFICATIONS) == true,
                                         accentColor = colors.warning,
                                         onGrant = {
@@ -333,8 +333,8 @@ class IpcApprovalActivity : ComponentActivity() {
                                     )
                                     PermissionRow(
                                         icon = FeatherIcons.MapPin,
-                                        name = "Location",
-                                        description = "Access GPS and network location",
+                                        name = "Местоположение",
+                                        description = "Доступ к GPS и сетевому местоположению",
                                         isGranted = currentResult?.permissions?.get(PermissionType.LOCATION) == true,
                                         accentColor = colors.info,
                                         onGrant = {
@@ -346,8 +346,8 @@ class IpcApprovalActivity : ComponentActivity() {
                                     )
                                     PermissionRow(
                                         icon = FeatherIcons.Phone,
-                                        name = "Phone & SMS",
-                                        description = "Read/send SMS and make calls",
+                                        name = "Телефон и SMS",
+                                        description = "Читать и отправлять SMS, совершать звонки",
                                         isGranted = currentResult?.permissions?.get(PermissionType.PHONE_SMS) == true,
                                         accentColor = colors.success,
                                         onGrant = {
@@ -363,8 +363,8 @@ class IpcApprovalActivity : ComponentActivity() {
                                     )
                                     PermissionRow(
                                         icon = FeatherIcons.Users,
-                                        name = "Contacts",
-                                        description = "Search and read device contacts",
+                                        name = "Контакты",
+                                        description = "Поиск и чтение контактов устройства",
                                         isGranted = currentResult?.permissions?.get(PermissionType.CONTACTS) == true,
                                         accentColor = colors.info,
                                         onGrant = {
@@ -373,8 +373,8 @@ class IpcApprovalActivity : ComponentActivity() {
                                     )
                                     PermissionRow(
                                         icon = FeatherIcons.Camera,
-                                        name = "Camera",
-                                        description = "Capture photos and video",
+                                        name = "Камера",
+                                        description = "Снимать фото и видео",
                                         isGranted = currentResult?.permissions?.get(PermissionType.CAMERA) == true,
                                         accentColor = colors.accent,
                                         onGrant = {
@@ -386,7 +386,7 @@ class IpcApprovalActivity : ComponentActivity() {
 
                                     // Special access permissions
                                     Text(
-                                        text = "SPECIAL ACCESS",
+                                        text = "СПЕЦИАЛЬНЫЙ ДОСТУП",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = colors.textMuted,
                                         fontWeight = FontWeight.SemiBold
@@ -396,8 +396,8 @@ class IpcApprovalActivity : ComponentActivity() {
 
                                     PermissionRow(
                                         icon = FeatherIcons.Folder,
-                                        name = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) "All Files Access" else "Storage",
-                                        description = "Full file system read/write access",
+                                        name = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) "Доступ ко всем файлам" else "Хранилище",
+                                        description = "Полный доступ к чтению и записи файлов",
                                         isGranted = currentResult?.permissions?.get(PermissionType.STORAGE) == true,
                                         accentColor = colors.error,
                                         onGrant = {
@@ -416,8 +416,8 @@ class IpcApprovalActivity : ComponentActivity() {
                                     )
                                     PermissionRow(
                                         icon = FeatherIcons.Crosshair,
-                                        name = "Accessibility Service",
-                                        description = "Screen control, gestures, and UI automation",
+                                        name = "Служба специальных возможностей",
+                                        description = "Управление экраном, жесты и автоматизация интерфейса",
                                         isGranted = currentResult?.permissions?.get(PermissionType.ACCESSIBILITY) == true,
                                         accentColor = colors.info,
                                         onGrant = {
@@ -426,8 +426,8 @@ class IpcApprovalActivity : ComponentActivity() {
                                     )
                                     PermissionRow(
                                         icon = FeatherIcons.Eye,
-                                        name = "Notification Listener",
-                                        description = "Read and intercept incoming notifications",
+                                        name = "Доступ к уведомлениям",
+                                        description = "Чтение и обработка входящих уведомлений",
                                         isGranted = currentResult?.permissions?.get(PermissionType.NOTIFICATION_LISTENER) == true,
                                         accentColor = colors.primary,
                                         onGrant = {
@@ -436,8 +436,8 @@ class IpcApprovalActivity : ComponentActivity() {
                                     )
                                     PermissionRow(
                                         icon = FeatherIcons.Layers,
-                                        name = "Display Over Apps",
-                                        description = "Show system overlay windows",
+                                        name = "Отображение поверх других приложений",
+                                        description = "Показывать системные окна поверх приложений",
                                         isGranted = currentResult?.permissions?.get(PermissionType.OVERLAY) == true,
                                         accentColor = colors.accent,
                                         onGrant = {
@@ -451,8 +451,8 @@ class IpcApprovalActivity : ComponentActivity() {
                                     )
                                     PermissionRow(
                                         icon = FeatherIcons.Battery,
-                                        name = "Battery Optimization",
-                                        description = "Prevent service interruption",
+                                        name = "Оптимизация батареи",
+                                        description = "Предотвращать остановку службы",
                                         isGranted = currentResult?.permissions?.get(PermissionType.BATTERY) == true,
                                         accentColor = colors.success,
                                         onGrant = {
@@ -480,7 +480,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                         )
                                     ) {
                                         Text(
-                                            text = if (guidedFlow.isRunning) "Continue in Settings…" else "Ask all together",
+                                            text = if (guidedFlow.isRunning) "Продолжить в настройках…" else "Запросить всё сразу",
                                             modifier = Modifier.padding(vertical = 4.dp)
                                         )
                                     }
@@ -488,7 +488,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                     guidedFlow.currentStepLabel?.let { label ->
                                         Spacer(Modifier.height(6.dp))
                                         Text(
-                                            text = "Step ${(guidedFlow.stepsDone + 1).coerceAtMost(guidedFlow.stepsTotal)} of ${guidedFlow.stepsTotal} — $label",
+                                            text = "Шаг ${(guidedFlow.stepsDone + 1).coerceAtMost(guidedFlow.stepsTotal)} из ${guidedFlow.stepsTotal} — $label",
                                             style = MaterialTheme.typography.labelSmall,
                                             color = colors.textSubtle
                                         )
@@ -514,7 +514,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                     enabled = currentResult?.allGranted == true
                                 ) {
                                     Text(
-                                        text = if (currentResult?.allGranted == true) "Continue" else "Grant All Permissions First",
+                                        text = if (currentResult?.allGranted == true) "Продолжить" else "Сначала предоставьте все разрешения",
                                         modifier = Modifier.padding(vertical = 4.dp)
                                     )
                                 }
@@ -527,7 +527,7 @@ class IpcApprovalActivity : ComponentActivity() {
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Text(
-                                        text = "Back",
+                                        text = "Назад",
                                         modifier = Modifier.padding(vertical = 4.dp)
                                     )
                                 }
@@ -580,7 +580,7 @@ class IpcApprovalActivity : ComponentActivity() {
     }
 
     private fun resolveCallerInfo(packageName: String?): Pair<String, Drawable?> {
-        if (packageName == null) return "Unknown App" to null
+        if (packageName == null) return "Неизвестное приложение" to null
         return try {
             val pm = packageManager
             val appInfo = pm.getApplicationInfo(packageName, 0)
@@ -669,7 +669,7 @@ private fun PermissionRow(
         } else {
             AsterButton(
                 onClick = onGrant,
-                text = "Grant",
+                text = "Разрешить",
                 variant = AsterButtonVariant.SECONDARY
             )
         }
