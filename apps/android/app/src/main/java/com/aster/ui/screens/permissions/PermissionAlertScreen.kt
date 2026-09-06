@@ -50,144 +50,60 @@ fun PermissionAlertScreen(
 ) {
     val colors = AsterTheme.colors
     val context = LocalContext.current
-
     var permissionResult by remember { mutableStateOf<PermissionCheckResult?>(null) }
 
-    LaunchedEffect(Unit) {
-        permissionResult = PermissionUtils.checkAllPermissions(context)
-    }
-
+    LaunchedEffect(Unit) { permissionResult = PermissionUtils.checkAllPermissions(context) }
     val result = permissionResult ?: return
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(colors.bg)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-    ) {
-        // Scrollable content area
+    Column(modifier = modifier.fillMaxSize().background(colors.bg).statusBarsPadding().navigationBarsPadding()) {
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp),
+            modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
-
-            // Warning icon
+            Spacer(Modifier.height(80.dp))
             AnimatedEntrance(delayMillis = 0) {
-                Box(
-                    modifier = Modifier
-                        .size(72.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(colors.warning.copy(alpha = 0.12f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = FeatherIcons.Shield,
-                        contentDescription = null,
-                        tint = colors.warning,
-                        modifier = Modifier.size(36.dp)
-                    )
+                Box(Modifier.size(72.dp).clip(RoundedCornerShape(20.dp)).background(colors.warning.copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
+                    Icon(FeatherIcons.Shield, null, tint = colors.warning, modifier = Modifier.size(36.dp))
                 }
             }
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            // Title
+            Spacer(Modifier.height(28.dp))
             AnimatedEntrance(delayMillis = 100) {
-                Text(
-                    text = "Permissions Required",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = colors.text,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
+                Text("Необходимы разрешения", style = MaterialTheme.typography.headlineMedium, color = colors.text, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Subtitle
+            Spacer(Modifier.height(12.dp))
             AnimatedEntrance(delayMillis = 200) {
                 Text(
-                    text = "Some permissions have been revoked or were not granted. Aster needs these to function properly.",
+                    "Некоторые разрешения были отозваны или еще не предоставлены. Светлане они необходимы для полноценной работы.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = colors.textSubtle,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Missing permissions card
+            Spacer(Modifier.height(32.dp))
             AnimatedEntrance(delayMillis = 300) {
                 AsterCard(modifier = Modifier.fillMaxWidth()) {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        // Count header
-                        Text(
-                            text = "${result.missingPermissions.size} of ${result.totalCount} permissions missing",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = colors.warning,
-                            fontWeight = FontWeight.SemiBold
-                        )
-
-                        // List of missing permission names
+                        Text("Не предоставлено: ${result.missingPermissions.size} из ${result.totalCount}", style = MaterialTheme.typography.titleSmall, color = colors.warning, fontWeight = FontWeight.SemiBold)
                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             result.missingPermissions.forEach { permType ->
                                 val name = PermissionUtils.getPermissionName(permType)
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .border(
-                                            1.dp,
-                                            colors.warning.copy(alpha = 0.2f),
-                                            RoundedCornerShape(8.dp)
-                                        )
-                                        .background(colors.warning.copy(alpha = 0.06f))
-                                        .padding(horizontal = 12.dp, vertical = 8.dp)
-                                ) {
-                                    Text(
-                                        text = name,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = colors.text,
-                                        fontWeight = FontWeight.Medium
-                                    )
+                                Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).border(1.dp, colors.warning.copy(alpha = 0.2f), RoundedCornerShape(8.dp)).background(colors.warning.copy(alpha = 0.06f)).padding(horizontal = 12.dp, vertical = 8.dp)) {
+                                    Text(name, style = MaterialTheme.typography.bodySmall, color = colors.text, fontWeight = FontWeight.Medium)
                                 }
                             }
                         }
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(Modifier.height(40.dp))
         }
 
-        // Fixed footer
         AnimatedEntrance(delayMillis = 400) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                AsterButton(
-                    onClick = onNavigateToPermissions,
-                    text = "Review Permissions",
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                AsterButton(
-                    onClick = onSkip,
-                    text = "Skip",
-                    variant = AsterButtonVariant.SECONDARY,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                AsterButton(onClick = onNavigateToPermissions, text = "Проверить разрешения", modifier = Modifier.fillMaxWidth())
+                AsterButton(onClick = onSkip, text = "Пропустить", variant = AsterButtonVariant.SECONDARY, modifier = Modifier.fillMaxWidth())
             }
         }
     }
