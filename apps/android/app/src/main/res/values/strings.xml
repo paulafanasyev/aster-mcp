@@ -38,8 +38,9 @@
 
     <string name="ipc_service_description">Позволяет локальному помощнику безопасно взаимодействовать со Светланой через IPC</string>
 
+    <!-- Светлана использует существующее лицо Aster как полноценную часть помощника, а не как декоративный элемент. -->
     <string name="companion_approval_title">Помощник Светлана</string>
-    <string name="companion_approval_body">Лицо помощника является декоративным. Откройте Светлану для взаимодействия.</string>
+    <string name="companion_approval_body">Откройте Светлану для взаимодействия с помощником.</string>
     <string name="companion_approval_open">Открыть Светлану</string>
     <string name="companion_overlay_permission_hint">Выберите Светлану в списке, чтобы разрешить ей отображать лицо поверх других приложений.</string>
 
