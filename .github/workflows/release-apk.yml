@@ -50,6 +50,50 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Localize permission UI for release
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          replacements = {
+            'apps/android/app/src/main/java/com/aster/ui/screens/permissions/PermissionsScreen.kt': {
+              '"Permissions"': '"Разрешения"',
+              '"All Granted"': '"Все предоставлены"',
+              '"Continue in Settings…"': '"Продолжить в настройках…"',
+              '"Ask all together"': '"Запросить все вместе"',
+              '"Runtime Permissions"': '"Основные разрешения"',
+              '"Notifications"': '"Уведомления"',
+              '"Location"': '"Местоположение"',
+              '"Phone & SMS"': '"Телефон и SMS"',
+              '"Contacts"': '"Контакты"',
+              '"Camera"': '"Камера"',
+              '"Special Access"': '"Специальный доступ"',
+              '"All Files Access"': '"Доступ ко всем файлам"',
+              '"Storage"': '"Хранилище"',
+              '"Accessibility Service"': '"Служба специальных возможностей"',
+              '"Notification Listener"': '"Доступ к уведомлениям"',
+              '"Display Over Apps"': '"Отображение поверх других приложений"',
+              '"Battery Optimization"': '"Оптимизация батареи"',
+            },
+            'apps/android/app/src/main/java/com/aster/ui/InteractivePromptActivity.kt': {
+              '"Choose a draft to publish"': '"Выберите вариант для публикации"',
+              '"OPTION ${i + 1}"': '"ВАРИАНТ ${i + 1}"',
+              '"${(if (prompt.editable) edited[i] else variant.text).length} chars"': '"${(if (prompt.editable) edited[i] else variant.text).length} символов"',
+              '"Use this  ›"': '"Использовать ›"',
+              '"Tap a draft to edit"': '"Нажмите на вариант, чтобы изменить его"',
+              '"Pick a draft"': '"Выберите вариант"',
+              '"Reject"': '"Отклонить"',
+            },
+          }
+          for name, mapping in replacements.items():
+              p = Path(name)
+              text = p.read_text(encoding='utf-8')
+              for old, new in mapping.items():
+                  text = text.replace(old, new)
+              p.write_text(text, encoding='utf-8')
+          PY
+          git diff --check
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
