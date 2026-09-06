@@ -50,7 +50,6 @@ import com.aster.ui.components.AsterButtonVariant
 import com.aster.ui.components.AsterCard
 import com.aster.ui.components.AsterSectionHeader
 import com.aster.ui.components.AsterTopBar
-import com.aster.ui.components.StatusBadge
 import com.aster.ui.theme.AsterTheme
 import com.aster.util.PermissionType
 import com.aster.util.PermissionUtils
@@ -58,6 +57,7 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.Battery
 import compose.icons.feathericons.Bell
 import compose.icons.feathericons.Camera
+import compose.icons.feathericons.Check
 import compose.icons.feathericons.Crosshair
 import compose.icons.feathericons.Eye
 import compose.icons.feathericons.Folder
@@ -74,20 +74,16 @@ fun PermissionsScreen(
 ) {
     val colors = AsterTheme.colors
     val context = LocalContext.current
-
-    // Permission states
     var permissionResult by remember { mutableStateOf(PermissionUtils.checkAllPermissions(context)) }
 
-    // Runtime permission launcher
     val guidedFlowRef = remember { mutableStateOf<GuidedPermissionFlow?>(null) }
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ ->
+    ) {
         permissionResult = PermissionUtils.checkAllPermissions(context)
         guidedFlowRef.value?.onRuntimeResult(context)
     }
 
-    // "Ask all together" guided flow
     val guidedFlow = remember {
         GuidedPermissionFlow(
             launchRuntime = { permissionLauncher.launch(it) },
@@ -95,7 +91,6 @@ fun PermissionsScreen(
         ).also { guidedFlowRef.value = it }
     }
 
-    // Refresh when returning from system settings
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -108,7 +103,6 @@ fun PermissionsScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    // Check permissions on initial composition
     LaunchedEffect(Unit) {
         permissionResult = PermissionUtils.checkAllPermissions(context)
     }
@@ -118,12 +112,10 @@ fun PermissionsScreen(
         containerColor = colors.bg,
         topBar = {
             AsterTopBar(
-                title = "Permissions",
+                title = "Разрешения",
                 onBack = onNavigateBack,
                 actions = {
-                    // Summary badge in top bar
-                    val badgeColor =
-                        if (permissionResult.allGranted) colors.success else colors.warning
+                    val badgeColor = if (permissionResult.allGranted) colors.success else colors.warning
                     Box(
                         modifier = Modifier
                             .padding(end = 16.dp)
@@ -133,7 +125,7 @@ fun PermissionsScreen(
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = if (permissionResult.allGranted) "All Granted" else "${permissionResult.grantedCount}/${permissionResult.totalCount}",
+                            text = if (permissionResult.allGranted) "Все разрешено" else "${permissionResult.grantedCount}/${permissionResult.totalCount}",
                             style = MaterialTheme.typography.labelSmall,
                             color = badgeColor,
                             fontWeight = FontWeight.SemiBold
@@ -144,28 +136,16 @@ fun PermissionsScreen(
         },
         bottomBar = {
             if (!permissionResult.allGranted) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(colors.bg)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(colors.border.copy(alpha = 0.5f))
-                    )
+                Column(modifier = Modifier.fillMaxWidth().background(colors.bg)) {
+                    Box(Modifier.fillMaxWidth().height(1.dp).background(colors.border.copy(alpha = 0.5f)))
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .navigationBarsPadding()
-                            .padding(horizontal = 20.dp, vertical = 12.dp),
+                        modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 20.dp, vertical = 12.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         AsterButton(
                             onClick = { guidedFlow.start(context) },
-                            text = if (guidedFlow.isRunning) "Continue in Settings…" else "Ask all together",
+                            text = if (guidedFlow.isRunning) "Продолжить в настройках…" else "Запросить все разрешения",
                             variant = AsterButtonVariant.PRIMARY,
                             enabled = !guidedFlow.isRunning,
                             modifier = Modifier.fillMaxWidth()
@@ -173,8 +153,8 @@ fun PermissionsScreen(
                         Text(
                             text = guidedFlow.currentStepLabel?.let { label ->
                                 val step = (guidedFlow.stepsDone + 1).coerceAtMost(guidedFlow.stepsTotal)
-                                "Step $step of ${guidedFlow.stepsTotal} — $label"
-                            } ?: "Grant everything in one guided flow instead of tapping each row.",
+                                "Шаг $step из ${guidedFlow.stepsTotal} — $label"
+                            } ?: "Можно предоставить все необходимые разрешения в едином пошаговом режиме.",
                             style = MaterialTheme.typography.labelSmall,
                             color = colors.textSubtle
                         )
@@ -184,14 +164,9 @@ fun PermissionsScreen(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 24.dp),
+            modifier = Modifier.fillMaxSize().padding(innerPadding).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Progress summary
             AsterCard(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -200,286 +175,118 @@ fun PermissionsScreen(
                 ) {
                     Column {
                         Text(
-                            text = "${permissionResult.grantedCount} of ${permissionResult.totalCount}",
+                            text = "${permissionResult.grantedCount} из ${permissionResult.totalCount}",
                             style = MaterialTheme.typography.headlineMedium,
                             color = if (permissionResult.allGranted) colors.success else colors.primary,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = if (permissionResult.allGranted) "All permissions granted" else "Permissions granted",
+                            text = if (permissionResult.allGranted) "Все разрешения предоставлены" else "Разрешения предоставлены частично",
                             style = MaterialTheme.typography.bodySmall,
                             color = colors.textSubtle
                         )
                     }
-
-                    // Visual progress indicator
                     Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(
-                                if (permissionResult.allGranted) colors.success.copy(alpha = 0.12f)
-                                else colors.warning.copy(alpha = 0.12f)
-                            ),
+                        modifier = Modifier.size(48.dp).clip(RoundedCornerShape(12.dp)).background(
+                            if (permissionResult.allGranted) colors.success.copy(alpha = 0.12f) else colors.warning.copy(alpha = 0.12f)
+                        ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = if (permissionResult.allGranted) "OK" else "${permissionResult.totalCount - permissionResult.grantedCount}",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = if (permissionResult.allGranted) colors.success else colors.warning,
-                            fontWeight = FontWeight.Bold
-                        )
+                        if (permissionResult.allGranted) {
+                            Icon(FeatherIcons.Check, "Готово", tint = colors.success, modifier = Modifier.size(24.dp))
+                        } else {
+                            Text(
+                                text = "${permissionResult.totalCount - permissionResult.grantedCount}",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = colors.warning,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
 
-            // =========================================================
-            // RUNTIME PERMISSIONS
-            // =========================================================
             AsterSectionHeader(
-                label = "Runtime Permissions",
-                count = listOf(
-                    PermissionType.NOTIFICATIONS,
-                    PermissionType.LOCATION,
-                    PermissionType.PHONE_SMS,
-                    PermissionType.CONTACTS,
-                    PermissionType.CAMERA
-                ).count { permissionResult.permissions[it] == true }
+                label = "Основные разрешения",
+                count = listOf(PermissionType.NOTIFICATIONS, PermissionType.LOCATION, PermissionType.PHONE_SMS, PermissionType.CONTACTS, PermissionType.CAMERA)
+                    .count { permissionResult.permissions[it] == true }
             )
 
             AsterCard(modifier = Modifier.fillMaxWidth()) {
                 Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
-                    PermissionItem(
-                        icon = FeatherIcons.Bell,
-                        name = "Notifications",
-                        description = "Post and manage notifications",
-                        isGranted = permissionResult.permissions[PermissionType.NOTIFICATIONS] == true,
-                        accentColor = colors.warning,
-                        onGrant = {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                permissionLauncher.launch(
-                                    arrayOf(Manifest.permission.POST_NOTIFICATIONS)
-                                )
-                            }
-                        }
-                    )
-
+                    PermissionItem(FeatherIcons.Bell, "Уведомления", "Показывать и управлять уведомлениями", permissionResult.permissions[PermissionType.NOTIFICATIONS] == true, colors.warning) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) permissionLauncher.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS))
+                    }
                     PermissionDivider()
-
-                    PermissionItem(
-                        icon = FeatherIcons.MapPin,
-                        name = "Location",
-                        description = "Access GPS and network location",
-                        isGranted = permissionResult.permissions[PermissionType.LOCATION] == true,
-                        accentColor = colors.info,
-                        onGrant = {
-                            permissionLauncher.launch(
-                                arrayOf(
-                                    Manifest.permission.ACCESS_FINE_LOCATION,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION
-                                )
-                            )
-                        }
-                    )
-
+                    PermissionItem(FeatherIcons.MapPin, "Местоположение", "Получать местоположение по GPS и сети", permissionResult.permissions[PermissionType.LOCATION] == true, colors.info) {
+                        permissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+                    }
                     PermissionDivider()
-
-                    PermissionItem(
-                        icon = FeatherIcons.Phone,
-                        name = "Phone & SMS",
-                        description = "Read/send SMS and make calls",
-                        isGranted = permissionResult.permissions[PermissionType.PHONE_SMS] == true,
-                        accentColor = colors.success,
-                        onGrant = {
-                            permissionLauncher.launch(
-                                arrayOf(
-                                    Manifest.permission.READ_SMS,
-                                    Manifest.permission.SEND_SMS,
-                                    Manifest.permission.RECEIVE_SMS,
-                                    Manifest.permission.CALL_PHONE,
-                                    Manifest.permission.READ_PHONE_STATE,
-                                    Manifest.permission.READ_CALL_LOG
-                                )
-                            )
-                        }
-                    )
-
+                    PermissionItem(FeatherIcons.Phone, "Телефон и SMS", "Читать и отправлять SMS, совершать звонки", permissionResult.permissions[PermissionType.PHONE_SMS] == true, colors.success) {
+                        permissionLauncher.launch(arrayOf(Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG))
+                    }
                     PermissionDivider()
-
-                    PermissionItem(
-                        icon = FeatherIcons.Users,
-                        name = "Contacts",
-                        description = "Search and read device contacts",
-                        isGranted = permissionResult.permissions[PermissionType.CONTACTS] == true,
-                        accentColor = colors.info,
-                        onGrant = {
-                            permissionLauncher.launch(
-                                arrayOf(Manifest.permission.READ_CONTACTS)
-                            )
-                        }
-                    )
-
+                    PermissionItem(FeatherIcons.Users, "Контакты", "Искать и читать контакты устройства", permissionResult.permissions[PermissionType.CONTACTS] == true, colors.info) {
+                        permissionLauncher.launch(arrayOf(Manifest.permission.READ_CONTACTS))
+                    }
                     PermissionDivider()
-
-                    PermissionItem(
-                        icon = FeatherIcons.Camera,
-                        name = "Camera",
-                        description = "Capture photos and video",
-                        isGranted = permissionResult.permissions[PermissionType.CAMERA] == true,
-                        accentColor = colors.accent,
-                        onGrant = {
-                            permissionLauncher.launch(
-                                arrayOf(Manifest.permission.CAMERA)
-                            )
-                        }
-                    )
+                    PermissionItem(FeatherIcons.Camera, "Камера", "Снимать фото и видео", permissionResult.permissions[PermissionType.CAMERA] == true, colors.accent) {
+                        permissionLauncher.launch(arrayOf(Manifest.permission.CAMERA))
+                    }
                 }
             }
 
-            // =========================================================
-            // SPECIAL PERMISSIONS
-            // =========================================================
             AsterSectionHeader(
-                label = "Special Access",
-                count = listOf(
-                    PermissionType.STORAGE,
-                    PermissionType.ACCESSIBILITY,
-                    PermissionType.NOTIFICATION_LISTENER,
-                    PermissionType.OVERLAY,
-                    PermissionType.BATTERY
-                ).count { permissionResult.permissions[it] == true }
+                label = "Специальный доступ",
+                count = listOf(PermissionType.STORAGE, PermissionType.ACCESSIBILITY, PermissionType.NOTIFICATION_LISTENER, PermissionType.OVERLAY, PermissionType.BATTERY)
+                    .count { permissionResult.permissions[it] == true }
             )
 
             AsterCard(modifier = Modifier.fillMaxWidth()) {
                 Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
-                    PermissionItem(
-                        icon = FeatherIcons.Folder,
-                        name = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) "All Files Access" else "Storage",
-                        description = "Full file system read/write access",
-                        isGranted = permissionResult.permissions[PermissionType.STORAGE] == true,
-                        accentColor = colors.error,
-                        onGrant = {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                                context.startActivity(
-                                    Intent(
-                                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                                        Uri.parse("package:${context.packageName}")
-                                    )
-                                )
-                            } else {
-                                permissionLauncher.launch(
-                                    arrayOf(
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                        Manifest.permission.READ_EXTERNAL_STORAGE
-                                    )
-                                )
-                            }
+                    PermissionItem(FeatherIcons.Folder, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) "Доступ ко всем файлам" else "Хранилище", "Полный доступ к чтению и записи файлов", permissionResult.permissions[PermissionType.STORAGE] == true, colors.error) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            context.startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:${context.packageName}")))
+                        } else {
+                            permissionLauncher.launch(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
                         }
-                    )
-
+                    }
                     PermissionDivider()
-
-                    PermissionItem(
-                        icon = FeatherIcons.Crosshair,
-                        name = "Accessibility Service",
-                        description = "Screen control, gestures, and UI automation",
-                        isGranted = permissionResult.permissions[PermissionType.ACCESSIBILITY] == true,
-                        accentColor = colors.info,
-                        onGrant = {
-                            context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-                        }
-                    )
-
+                    PermissionItem(FeatherIcons.Crosshair, "Служба специальных возможностей", "Управление экраном, жестами и интерфейсом", permissionResult.permissions[PermissionType.ACCESSIBILITY] == true, colors.info) {
+                        context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                    }
                     PermissionDivider()
-
-                    PermissionItem(
-                        icon = FeatherIcons.Eye,
-                        name = "Notification Listener",
-                        description = "Read and intercept incoming notifications",
-                        isGranted = permissionResult.permissions[PermissionType.NOTIFICATION_LISTENER] == true,
-                        accentColor = colors.primary,
-                        onGrant = {
-                            context.startActivity(
-                                Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                            )
-                        }
-                    )
-
+                    PermissionItem(FeatherIcons.Eye, "Доступ к уведомлениям", "Читать входящие уведомления и реагировать на них", permissionResult.permissions[PermissionType.NOTIFICATION_LISTENER] == true, colors.primary) {
+                        context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                    }
                     PermissionDivider()
-
-                    PermissionItem(
-                        icon = FeatherIcons.Layers,
-                        name = "Display Over Apps",
-                        description = "Show system overlay windows",
-                        isGranted = permissionResult.permissions[PermissionType.OVERLAY] == true,
-                        accentColor = colors.accent,
-                        onGrant = {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                context.startActivity(
-                                    Intent(
-                                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                        Uri.parse("package:${context.packageName}")
-                                    )
-                                )
-                            }
-                        }
-                    )
-
+                    PermissionItem(FeatherIcons.Layers, "Отображение поверх других приложений", "Показывать окна Светланы поверх других приложений", permissionResult.permissions[PermissionType.OVERLAY] == true, colors.accent) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) context.startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}")))
+                    }
                     PermissionDivider()
-
-                    PermissionItem(
-                        icon = FeatherIcons.Battery,
-                        name = "Battery Optimization",
-                        description = "Exempt from battery optimization to prevent service interruption",
-                        isGranted = permissionResult.permissions[PermissionType.BATTERY] == true,
-                        accentColor = colors.success,
-                        onGrant = {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                context.startActivity(
-                                    Intent(
-                                        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                        Uri.parse("package:${context.packageName}")
-                                    )
-                                )
-                            }
-                        }
-                    )
+                    PermissionItem(FeatherIcons.Battery, "Оптимизация батареи", "Исключить Светлану из оптимизации для стабильной фоновой работы", permissionResult.permissions[PermissionType.BATTERY] == true, colors.success) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) context.startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:${context.packageName}")))
+                    }
                 }
             }
 
-            // Info notice
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .border(1.dp, colors.primary.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
-                    .background(colors.primary.copy(alpha = 0.05f))
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).border(1.dp, colors.primary.copy(alpha = 0.2f), RoundedCornerShape(12.dp)).background(colors.primary.copy(alpha = 0.05f)).padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.Top
             ) {
-                Icon(
-                    imageVector = FeatherIcons.Info,
-                    contentDescription = null,
-                    tint = colors.primary,
-                    modifier = Modifier.size(18.dp)
-                )
+                Icon(FeatherIcons.Info, null, tint = colors.primary, modifier = Modifier.size(18.dp))
                 Text(
-                    text = "Tap each permission to grant access, or use “Ask all together” below to walk through everything in one go. Some permissions require manual enabling in system settings and cannot be requested directly.",
+                    text = "Нажмите на нужное разрешение, чтобы предоставить доступ. Некоторые специальные разрешения открывают системные настройки Android и требуют ручного включения.",
                     style = MaterialTheme.typography.bodySmall,
                     color = colors.textSubtle,
                     modifier = Modifier.weight(1f)
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
         }
     }
 }
-
-// =============================================================================
-// PERMISSION ITEM
-// =============================================================================
 
 @Composable
 private fun PermissionItem(
@@ -491,83 +298,32 @@ private fun PermissionItem(
     onGrant: () -> Unit
 ) {
     val colors = AsterTheme.colors
-
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Icon container
         Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(accentColor.copy(alpha = 0.12f)),
+            modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(accentColor.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = accentColor,
-                modifier = Modifier.size(20.dp)
-            )
+            Icon(icon, null, tint = accentColor, modifier = Modifier.size(20.dp))
         }
-
-        // Text content
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.bodyMedium,
-                color = colors.text,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                color = colors.textMuted
-            )
+            Text(name, style = MaterialTheme.typography.bodyMedium, color = colors.text, fontWeight = FontWeight.Medium)
+            Spacer(Modifier.height(2.dp))
+            Text(description, style = MaterialTheme.typography.bodySmall, color = colors.textMuted)
         }
-
-        // Status and action
-        if (isGranted) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                StatusBadge(
-                    color = colors.success
-                )
-                Text(
-                    text = "Granted",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = colors.success,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        } else {
-            AsterButton(
-                onClick = onGrant,
-                text = "Grant",
-                variant = AsterButtonVariant.SECONDARY
-            )
-        }
+        AsterButton(
+            onClick = onGrant,
+            text = if (isGranted) "Разрешено" else "Разрешить",
+            variant = if (isGranted) AsterButtonVariant.SECONDARY else AsterButtonVariant.PRIMARY
+        )
     }
 }
-
-// =============================================================================
-// PERMISSION DIVIDER
-// =============================================================================
 
 @Composable
 private fun PermissionDivider() {
     val colors = AsterTheme.colors
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(1.dp)
-            .background(colors.border.copy(alpha = 0.5f))
-    )
+    Box(Modifier.fillMaxWidth().height(1.dp).background(colors.border.copy(alpha = 0.5f)))
 }
