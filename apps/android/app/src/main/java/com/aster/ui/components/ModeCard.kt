@@ -192,7 +192,7 @@ fun ModeCard(
                             .background(ActiveBadgeColor)
                     )
                     Text(
-                        text = "Active",
+                        text = "Активен",
                         style = MaterialTheme.typography.labelSmall,
                         color = ActiveBadgeColor,
                         fontWeight = FontWeight.SemiBold,
@@ -200,7 +200,7 @@ fun ModeCard(
                 }
             } else if (isSelected) {
                 Text(
-                    text = "Last used",
+                    text = "Последний использованный",
                     style = MaterialTheme.typography.labelSmall,
                     color = colors.textMuted,
                     modifier = Modifier

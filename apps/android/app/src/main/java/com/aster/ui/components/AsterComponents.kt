@@ -226,7 +226,7 @@ fun AsterTopBar(
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = "Назад",
                         tint = colors.text
                     )
                 }
