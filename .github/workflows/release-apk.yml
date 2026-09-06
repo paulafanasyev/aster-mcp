@@ -56,19 +56,30 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Decode keystore
-        run: echo "$KEYSTORE_B64" | base64 -d > apps/android/aster-release.jks
-        env:
-          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+      - name: Generate ephemeral CI signing key
+        run: |
+          keytool -genkeypair -v \
+            -keystore apps/android/aster-release.jks \
+            -alias aster-ci \
+            -keyalg RSA -keysize 2048 -validity 1 \
+            -storepass ci-temporary-password \
+            -keypass ci-temporary-password \
+            -dname "CN=Svetlana CI, OU=Build, O=Mir Samozanyatykh, L=CI, ST=CI, C=XX"
 
       - name: Build release APK
         working-directory: apps/android
         env:
           KEYSTORE_PATH: ${{ github.workspace }}/apps/android/aster-release.jks
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ci-temporary-password
+          KEY_ALIAS: aster-ci
+          KEY_PASSWORD: ci-temporary-password
         run: ./gradlew assembleRelease
+
+      - name: Verify APK exists
+        run: |
+          test -s apps/android/app/build/outputs/apk/release/app-release.apk
+          sha256sum apps/android/app/build/outputs/apk/release/app-release.apk
+          stat -c 'APK_SIZE_BYTES=%s' apps/android/app/build/outputs/apk/release/app-release.apk
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
