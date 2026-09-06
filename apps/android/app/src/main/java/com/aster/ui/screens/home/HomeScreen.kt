@@ -1,7 +1,6 @@
 package com.aster.ui.screens.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -49,7 +47,6 @@ import com.aster.ui.components.StarRepoCard
 import com.aster.ui.theme.AsterTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Activity
-import compose.icons.feathericons.Star
 
 private val IpcColor = Color(0xFFF59E0B)
 private val McpColor = Color(0xFF8B5CF6)
@@ -78,6 +75,7 @@ fun HomeScreen(
     val activeModes = viewModel.activeModeTypes
     val starPromptDismissed by viewModel.starPromptDismissed.collectAsState()
     val uriHandler = LocalUriHandler.current
+    val starRepoUrl = stringResource(R.string.star_repo_url)
 
     Column(Modifier.fillMaxSize().background(colors.bg).statusBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -88,21 +86,9 @@ fun HomeScreen(
         }
 
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
-            AsterButton(
-                onClick = onNavigateToChat,
-                text = "Чат со Светланой",
-                variant = AsterButtonVariant.PRIMARY,
-                modifier = Modifier.fillMaxWidth()
-            )
-
+            AsterButton(onClick = onNavigateToChat, text = "Чат со Светланой", variant = AsterButtonVariant.PRIMARY, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(16.dp))
-
-            AsterButton(
-                onClick = onNavigateToContacts,
-                text = "Контакты",
-                variant = AsterButtonVariant.SECONDARY,
-                modifier = Modifier.fillMaxWidth()
-            )
+            AsterButton(onClick = onNavigateToContacts, text = "Контакты", variant = AsterButtonVariant.SECONDARY, modifier = Modifier.fillMaxWidth())
 
             if (isServiceRunning && activeModes.isNotEmpty()) {
                 AnimatedEntrance(delayMillis = 0, durationMillis = 300) {
@@ -116,7 +102,7 @@ fun HomeScreen(
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                 GlowOrb(activeColor, 28.dp, true)
                                 Spacer(Modifier.width(10.dp))
-                                Text(modeType.toDisplayName(), MaterialTheme.typography.titleSmall, activeColor, FontWeight.SemiBold, Modifier.weight(1f))
+                                Text(text = modeType.toDisplayName(), style = MaterialTheme.typography.titleSmall, color = activeColor, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                                 AsterButton(onClick = {
                                     when (modeType) {
                                         ModeType.IPC -> onNavigateToIpcDashboard()
@@ -131,39 +117,23 @@ fun HomeScreen(
             }
 
             Spacer(Modifier.height(20.dp))
-            Text(stringResource(R.string.choose_how_to_connect), MaterialTheme.typography.titleMedium, colors.text, FontWeight.SemiBold, Modifier.padding(bottom = 4.dp))
-            Text(stringResource(R.string.choose_how_to_connect_description), MaterialTheme.typography.bodySmall, colors.textMuted, Modifier.padding(bottom = 16.dp))
+            Text(text = stringResource(R.string.choose_how_to_connect), style = MaterialTheme.typography.titleMedium, color = colors.text, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(bottom = 4.dp))
+            Text(text = stringResource(R.string.choose_how_to_connect_description), style = MaterialTheme.typography.bodySmall, color = colors.textMuted, modifier = Modifier.padding(bottom = 16.dp))
 
             AnimatedEntrance(delayMillis = 100) {
-                ModeCard(
-                    title = stringResource(R.string.remote_server), tagline = stringResource(R.string.remote_server_tagline), description = stringResource(R.string.remote_server_description),
-                    icon = Icons.Default.Cloud, accentColor = RemoteColor,
-                    features = listOf(stringResource(R.string.feature_npm_install), stringResource(R.string.feature_40_tools), stringResource(R.string.feature_webhooks), stringResource(R.string.feature_tailscale_ready)),
-                    badges = listOf(BadgeItem("NPM", NpmBadgeColor), BadgeItem("OpenClaw", OpenClawBadgeColor)), complexity = stringResource(R.string.recommended),
-                    isSelected = lastUsedMode == ModeType.REMOTE_WS.name, isActive = activeModes.contains(ModeType.REMOTE_WS), onClick = onNavigateToRemote, modifier = Modifier.fillMaxWidth()
-                )
+                ModeCard(title = stringResource(R.string.remote_server), tagline = stringResource(R.string.remote_server_tagline), description = stringResource(R.string.remote_server_description), icon = Icons.Default.Cloud, accentColor = RemoteColor, features = listOf(stringResource(R.string.feature_npm_install), stringResource(R.string.feature_40_tools), stringResource(R.string.feature_webhooks), stringResource(R.string.feature_tailscale_ready)), badges = listOf(BadgeItem("NPM", NpmBadgeColor), BadgeItem("OpenClaw", OpenClawBadgeColor)), complexity = stringResource(R.string.recommended), isSelected = lastUsedMode == ModeType.REMOTE_WS.name, isActive = activeModes.contains(ModeType.REMOTE_WS), onClick = onNavigateToRemote, modifier = Modifier.fillMaxWidth())
             }
             Spacer(Modifier.height(12.dp))
             AnimatedEntrance(delayMillis = 250) {
-                ModeCard(
-                    title = stringResource(R.string.ipc_mode), tagline = stringResource(R.string.ipc_mode_tagline), description = stringResource(R.string.ipc_mode_home_description),
-                    icon = Icons.Default.PhoneAndroid, accentColor = IpcColor,
-                    features = listOf(stringResource(R.string.feature_zero_latency), stringResource(R.string.feature_no_network), stringResource(R.string.feature_token_auth), stringResource(R.string.feature_40_tools)), complexity = stringResource(R.string.beginner),
-                    isSelected = lastUsedMode == ModeType.IPC.name, isActive = activeModes.contains(ModeType.IPC), onClick = onNavigateToIpc, modifier = Modifier.fillMaxWidth()
-                )
+                ModeCard(title = stringResource(R.string.ipc_mode), tagline = stringResource(R.string.ipc_mode_tagline), description = stringResource(R.string.ipc_mode_home_description), icon = Icons.Default.PhoneAndroid, accentColor = IpcColor, features = listOf(stringResource(R.string.feature_zero_latency), stringResource(R.string.feature_no_network), stringResource(R.string.feature_token_auth), stringResource(R.string.feature_40_tools)), complexity = stringResource(R.string.beginner), isSelected = lastUsedMode == ModeType.IPC.name, isActive = activeModes.contains(ModeType.IPC), onClick = onNavigateToIpc, modifier = Modifier.fillMaxWidth())
             }
             Spacer(Modifier.height(12.dp))
             AnimatedEntrance(delayMillis = 400) {
-                ModeCard(
-                    title = stringResource(R.string.local_mcp_server), tagline = stringResource(R.string.local_mcp_server_tagline), description = stringResource(R.string.local_mcp_server_home_description),
-                    icon = Icons.Default.Dns, accentColor = McpColor,
-                    features = listOf(stringResource(R.string.feature_claude_desktop), stringResource(R.string.feature_http_transport), stringResource(R.string.feature_lan_access), stringResource(R.string.feature_tailscale)), complexity = stringResource(R.string.intermediate),
-                    isSelected = lastUsedMode == ModeType.LOCAL_MCP.name, isActive = activeModes.contains(ModeType.LOCAL_MCP), onClick = onNavigateToMcp, modifier = Modifier.fillMaxWidth()
-                )
+                ModeCard(title = stringResource(R.string.local_mcp_server), tagline = stringResource(R.string.local_mcp_server_tagline), description = stringResource(R.string.local_mcp_server_home_description), icon = Icons.Default.Dns, accentColor = McpColor, features = listOf(stringResource(R.string.feature_claude_desktop), stringResource(R.string.feature_http_transport), stringResource(R.string.feature_lan_access), stringResource(R.string.feature_tailscale)), complexity = stringResource(R.string.intermediate), isSelected = lastUsedMode == ModeType.LOCAL_MCP.name, isActive = activeModes.contains(ModeType.LOCAL_MCP), onClick = onNavigateToMcp, modifier = Modifier.fillMaxWidth())
             }
             if (!starPromptDismissed) {
                 Spacer(Modifier.height(24.dp))
-                AnimatedEntrance(delayMillis = 550) { StarRepoCard(onStar = { uriHandler.openUri(stringResource(R.string.star_repo_url)); viewModel.dismissStarPrompt() }, onDismiss = viewModel::dismissStarPrompt) }
+                AnimatedEntrance(delayMillis = 550) { StarRepoCard(onStar = { uriHandler.openUri(starRepoUrl); viewModel.dismissStarPrompt() }, onDismiss = viewModel::dismissStarPrompt) }
             }
             Spacer(Modifier.height(32.dp))
         }
