@@ -95,4 +95,13 @@
     <string name="subscribe_to">Подписаться на </string>
     <string name="on_youtube"> на YouTube</string>
     <string name="youtube_url">https://youtube.com/@GamesPatch</string>
+
+    <!-- Logs -->
+    <string name="tool_call_logs">Журнал вызовов инструментов</string>
+    <string name="clear_logs">Очистить журнал</string>
+    <string name="total_calls">Всего вызовов</string>
+    <string name="success_rate">Доля успешных</string>
+    <string name="no_tool_calls_yet">Вызовов инструментов пока нет</string>
+    <string name="tool_calls_will_appear_here">Вызовы инструментов будут появляться здесь по мере выполнения</string>
+    <string name="remote">Удалённый</string>
 </resources>
